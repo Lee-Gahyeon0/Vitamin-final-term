@@ -1,0 +1,64 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+# Gradle
+.gradle/
+build/
+
+# IDE (Eclipse, IntelliJ 등)
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+
+# 로그 / 임시파일
+*.log
+out/
+tmp/
+
+
+# local config (비번 / API키 들어있는 설정파일)
+src/main/resources/application.properties
+src/main/resources/application-*.yml
+src/main/resources/application-*.properties
+.env
+
+# 비밀 설정 파일 (깃허브에 올리지 말기)
+src/main/resources/application.properties
+
