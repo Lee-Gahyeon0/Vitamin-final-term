@@ -1,8 +1,11 @@
 package com.springboot.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "supplement")
 public class Supplement {
@@ -37,6 +40,13 @@ public class Supplement {
     // 자유 메모 (선택)
     @Column(length = 1000)
     private String memo;
+    
+    
+    // 이 영양제가 어떤 식약처 제품 기반인지(선택)
+    // FK: raw_product.id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "raw_product_id")
+    private RawProduct rawProduct;
 
     // 레코드 생성 시각 (DB에서 DEFAULT CURRENT_TIMESTAMP로 채우는 컬럼 가정)
     // 애플리케이션에서는 값 직접 안 넣으므로 insertable=false, updatable=false

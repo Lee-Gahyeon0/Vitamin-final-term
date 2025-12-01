@@ -13,7 +13,11 @@ public class FoodSafetyApiController {
     public FoodSafetyApiController(FoodSafetyApiService foodSafetyApiService) {
         this.foodSafetyApiService = foodSafetyApiService;
     }
+/**
+ *  품목 DB로 옮김
+ *  지금 당장은 쓸 일 없어서 주석처리
 
+ 
     // 품목제조신고 API -> raw_product 
     @GetMapping("/products")   
     public String loadProducts() {
@@ -27,4 +31,5 @@ public class FoodSafetyApiController {
         foodSafetyApiService.loadIndividualIngredientDataFromApi();
         return "ingredients ok";
     }
+ */
 }
