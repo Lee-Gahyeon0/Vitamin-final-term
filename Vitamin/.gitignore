@@ -62,3 +62,7 @@ src/main/resources/application-*.properties
 # 비밀 설정 파일 (깃허브에 올리지 말기)
 src/main/resources/application.properties
 
+# 민감 설정 파일은 Git에서 제외
+src/main/resources/application.properties
+src/main/resources/application-*.yml
+src/main/resources/application-*.properties
