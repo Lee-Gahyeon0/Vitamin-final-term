@@ -1,9 +1,10 @@
 package com.springboot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import com.springboot.domain.Member;
+
+
 
 //회원 테이블(member)에 접근하는 레포지토리
 public interface MemberRepository extends JpaRepository<Member, Long> {
