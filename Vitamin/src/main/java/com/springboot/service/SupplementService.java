@@ -73,9 +73,10 @@ public Supplement createSupplement(Long memberId,
      *    - 나중에 "검색 후, 하나 선택해서 내 영양제와 매핑"에 사용
      */
 	@Transactional(readOnly = true)
-	public List<RawProduct> serchRawProductsByName(String keyword){
-		return rawProductRepository.findByProductNameContaining(keyword);
+	public List<RawProduct> searchRawProductsByName(String keyword) {
+	    return rawProductRepository.findByProductNameContaining(keyword);
 	}
+	
 	
 	/**
      * 4) 내 영양제와 식약처 RAW 제품 매핑하기
@@ -84,16 +85,19 @@ public Supplement createSupplement(Long memberId,
      */
 	
 	public  Supplement linkRawProduct(Long supplementId, Long rawProductId) {
+		
+		
+		 // (1) 내 영양제 조회
 		Supplement supplement = supplementRepository.findById(supplementId)
 				.orElseThrow(() -> new IllegalArgumentException("영양제를 찾을 수 없습니다. id=" + supplementId));
 		
+		 // (2) 식약처 제품 조회
 		RawProduct rawProduct = rawProductRepository.findById(rawProductId)
                 .orElseThrow(() -> new IllegalArgumentException("식약처 제품을 찾을 수 없습니다. id=" + rawProductId));
 		
 		// 연결
 		supplement.setRawProduct(rawProduct);
 		
-		// save 는 @Transactional 안에서 영속 상태라 변경 자동 반영됨
         return supplement;
 	}
 

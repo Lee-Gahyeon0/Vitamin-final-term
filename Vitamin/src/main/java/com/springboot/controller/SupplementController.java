@@ -1,0 +1,131 @@
+package com.springboot.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.springboot.domain.RawProduct;
+import com.springboot.domain.Supplement;
+import com.springboot.service.SupplementService;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+/**
+ * [컨트롤러 계층]
+ * - URL 요청을 받아서 Service를 호출하고, Thymeleaf 뷰에 데이터 전달
+ */
+
+@Controller
+@RequestMapping("/supplements")
+public class SupplementController {
+	
+	private SupplementService supplementService; // final 의존성 일단 빼둠
+	
+	public SupplementController(SupplementService supplementService) {
+		this.supplementService = supplementService;
+	}
+	
+	// -----------------------------
+    // 1) 영양제 목록 페이지
+    //    - 일단 memberId는 임시로 1번 고정 (로그인 기능 나중에)
+    // -----
+	@GetMapping
+	public String list(Model model) {
+		  Long memberId = 1L; // TODO: 나중에 로그인 세션에서 꺼내기
+
+	        List<Supplement> supplements = supplementService.getSupplements(memberId);
+	        model.addAttribute("supplements", supplements);
+
+	        return "supplement/list"; // templates/supplement/list.html
+	}
+	
+	
+	// -----------------------------
+    // 2) 영양제 등록 폼 화면
+    // -----------------------------
+	@GetMapping("/new")
+	public String showCreateForm(Model model) {
+        SupplementForm form = new SupplementForm();
+        form.setMemberId(1L); // 임시로 1번 회원
+
+        model.addAttribute("supplementForm", form);
+        return "supplement/form"; // templates/supplement/form.html
+    }
+	
+	
+	// -----------------------------
+    // 3) 영양제 등록 처리 (POST)
+    // -----------------------------
+	 @PostMapping
+	    public String create(@ModelAttribute("supplementForm") SupplementForm form) {
+
+	        supplementService.createSupplement(
+	                form.getMemberId(),
+	                form.getName(),
+	                form.getBrand(),
+	                form.getTags(),
+	                form.getMemo()
+	        );
+
+	        // 등록 후 목록으로 리다이렉트
+	        return "redirect:/supplements";
+	    }
+	 
+	 
+	// -----------------------------
+	    // 4) 식약처 제품 검색 화면 + 결과
+	    //    - /supplements/{id}/link?keyword=비타민
+	    // -----------------------------
+	    @GetMapping("/{id}/link")
+	    public String showLinkPage(@PathVariable("id") Long supplementId,
+	                               @RequestParam(value = "keyword", required = false) String keyword,
+	                               Model model) {
+
+	        // 내 영양제 id를 뷰에 넘겨서, 나중에 어떤 영양제와 연결할지 유지
+	        model.addAttribute("supplementId", supplementId);
+
+	        if (keyword != null && !keyword.isBlank()) {
+	            List<RawProduct> products = supplementService.searchRawProductsByName(keyword);
+	            model.addAttribute("products", products);
+	            model.addAttribute("keyword", keyword);
+	        }
+
+	        return "supplement/link-product";  // 검색 + 결과 보여주는 화면
+	    }
+
+	    // -----------------------------
+	    // 5) 선택한 식약처 제품과 내 영양제 매핑
+	    // -----------------------------
+	    @PostMapping("/{id}/link")
+	    public String linkRawProduct(@PathVariable("id") Long supplementId,
+	                                 @RequestParam("rawProductId") Long rawProductId) {
+
+	        supplementService.linkRawProduct(supplementId, rawProductId);
+
+	        // 다시 내 영양제 목록으로
+	        return "redirect:/supplements";
+	    }
+
+	    // ============================
+	    // 폼 데이터 전달용 DTO (내부 클래스)
+	    // ============================
+	    @Getter
+	    @Setter
+	    public static class SupplementForm {
+	        // chap05에서 했던 "커맨드 객체" 느낌
+	        private Long memberId;
+	        private String name;
+	        private String brand;
+	        private String tags;
+	        private String memo;
+	    }
+
+}

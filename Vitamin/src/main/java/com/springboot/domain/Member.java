@@ -19,6 +19,9 @@ public class Member {
 
     @Column(nullable = false, length = 100)
     private String nickname;
+    
+    @Column(length = 20, nullable = false)
+    private String role = "USER";  
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;

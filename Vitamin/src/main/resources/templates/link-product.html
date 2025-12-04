@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>식약처 제품 매핑</title>
+</head>
+<body>
+
+<h1>식약처 제품 검색 및 매핑</h1>
+
+<!-- 목록으로 돌아가기 -->
+<p>
+    <a th:href="@{/supplements}">← 내 영양제 목록으로</a>
+</p>
+
+<!-- 어떤 영양제에 매핑하는지 표시 (id만 표시, 나중에 이름까지 보여주고 싶으면 변경 가능) -->
+<p>
+    매핑할 내 영양제 ID:
+    <strong th:text="${supplementId}">1</strong>
+</p>
+
+<hr/>
+
+<!-- 🔍 검색 폼 (GET /supplements/{id}/link?keyword=...) -->
+<form th:action="@{|/supplements/${supplementId}/link|}" method="get">
+    <label for="keyword">제품명 검색</label>
+    <input type="text" id="keyword" name="keyword"
+           th:value="${keyword}" placeholder="예: 비타민C"/>
+    <button type="submit">검색</button>
+</form>
+
+<hr/>
+
+<!-- 검색 결과 영역 -->
+<div th:if="${products != null}">
+    <h2>
+        검색 결과
+        <span th:if="${keyword != null}">
+            (키워드: "<span th:text="${keyword}">비타민</span>")
+        </span>
+    </h2>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>제품ID</th>
+            <th>제품명</th>
+            <th>업소명</th>
+            <th>제품형태</th>
+            <th>주된 기능성</th>
+            <th>선택</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- products: List<RawProduct> -->
+        <tr th:each="p : ${products}">
+            <td th:text="${p.id}">1</td>
+            <td th:text="${p.productName}">제품명</td>
+            <td th:text="${p.companyName}">업소명</td>
+            <td th:text="${p.formType}">정제</td>
+            <td th:text="${p.mainFunction}">기능성 설명</td>
+
+            <td>
+                <!-- 이 제품으로 매핑하는 POST 폼 -->
+                <form th:action="@{|/supplements/${supplementId}/link|}" method="post">
+                    <input type="hidden" name="rawProductId" th:value="${p.id}"/>
+                    <button type="submit">이 제품으로 연결</button>
+                </form>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(products)}">
+            <td colspan="6">검색 결과가 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- 아직 검색 안 한 상태 -->
+<div th:if="${products == null}">
+    <p>위에서 제품명을 입력하고 검색을 눌러주세요.</p>
+</div>
+
+</body>
+</html>

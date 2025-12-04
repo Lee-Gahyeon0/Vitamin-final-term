@@ -54,6 +54,13 @@ public class FoodSafetyApiService {
      *    JSON의 row 배열을 돌면서 raw_product 테이블에 여러 건 저장.
      */
     public void loadProductDataFromApi() {
+    	
+    	long count = rawProductRepository.count(); //이미 있으면 안가져오기
+        if (count > 0) {
+            System.out.println("[품목제조신고] raw_product에 이미 " + count + "건 있음 -> API 호출 안 함");
+            return;
+        }
+        
         RestTemplate restTemplate = new RestTemplate();
 
         int startIdx = 1;
@@ -143,6 +150,16 @@ public class FoodSafetyApiService {
      *    JSON의 row 배열을 돌면서 raw_individual_ingredient 테이블에 여러 건 저장.
      */
     public void loadIndividualIngredientDataFromApi() {
+    	
+    	
+        long count = rawIndividualIngredientRepository.count(); //이미 있으면 안가져오기
+        if (count > 0) {
+            System.out.println("[개별인정형] raw_individual_ingredient에 이미 " + count + "건 있음 -> API 호출 안 함");
+            return;
+        }
+        
+        
+        
         RestTemplate restTemplate = new RestTemplate();
 
         int startIdx = 1;

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영양제 등록</title>
+</head>
+<body>
+
+<h1>영양제 등록</h1>
+
+<!-- 목록으로 돌아가기 -->
+<p>
+    <a th:href="@{/supplements}">← 목록으로</a>
+</p>
+
+<!--
+    supplementForm: SupplementController.SupplementForm
+    - memberId
+    - name
+    - brand
+    - tags
+    - memo
+-->
+<form th:action="@{/supplements}" th:object="${supplementForm}" method="post">
+
+    <!-- memberId는 로그인 세션 대신 임시로 hidden -->
+    <input type="hidden" th:field="*{memberId}"/>
+
+    <div>
+        <label for="name">영양제 이름</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="예: 비타민C 1000mg"/>
+    </div>
+
+    <div>
+        <label for="brand">브랜드</label>
+        <input type="text" id="brand" th:field="*{brand}" placeholder="예: OOO 브랜드"/>
+    </div>
+
+    <div>
+        <label for="tags">태그</label>
+        <input type="text" id="tags" th:field="*{tags}" placeholder="예: 비타민C,철분"/>
+    </div>
+
+    <div>
+        <label for="memo">메모</label><br/>
+        <textarea id="memo" th:field="*{memo}" rows="4" cols="40"
+                  placeholder="섭취 목적, 시간대, 기타 메모를 적어주세요."></textarea>
+    </div>
+
+    <div>
+        <button type="submit">등록하기</button>
+        <button type="reset">다시 작성</button>
+    </div>
+
+</form>
+
+</body>
+</html>
