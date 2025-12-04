@@ -10,12 +10,12 @@
 
 <div>
     <!-- 새 영양제 등록 버튼 -->
-    <a th:href="@{/supplements/new}">새 영양제 등록</a>
+    <a th:href="@{/supplements/new}">+ 영양제 추가하기</a>
 </div>
 
 <hr/>
 
-<table border="1">
+<table border="1" cellpadding="8">
     <thead>
     <tr>
         <th>번호</th>
@@ -24,7 +24,7 @@
         <th>태그</th>
         <th>메모</th>
         <th>등록일</th>
-        <th>식약처 제품 매핑</th>
+        <th>식약처 제품 연결</th>
     </tr>
     </thead>
     <tbody>
@@ -47,8 +47,8 @@
 
     <!-- 영양제가 하나도 없을 때 -->
     <tr th:if="${#lists.isEmpty(supplements)}">
-        <td colspan="7">등록된 영양제가 없습니다.</td>
-    </tr>
+		<td colspan="6">등록된 영양제가 없습니다. 상단의 '영양제 추가하기'를 눌러 등록해보세요.</td>
+	</tr>
     </tbody>
 </table>
 
