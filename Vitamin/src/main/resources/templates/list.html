@@ -4,53 +4,79 @@
     <meta charset="UTF-8">
     <title>내 영양제 목록</title>
 </head>
-<body>
+<body>	
+	<!-- [공통 헤더] 로그인 상태에 따라 다르게 -->
+			<div class="top-bar">
+			    <!-- 왼쪽 : 홈 -->
+			    <div class="top-left">
+			        <a th:href="@{/}">홈</a>
+			    </div>
 
-<h1>내 영양제 목록</h1>
+			    <!-- 오른쪽 : 로그인/회원가입 or 사용자 정보 -->
+			    <div class="top-right">
+			        <!-- 비로그인 -->
+			        <div th:if="${session.loginMember} == null">
+			            <a th:href="@{/members/login}">로그인</a>
+			            <a th:href="@{/members/register}">회원가입</a>
+			        </div>
 
-<div>
-    <!-- 새 영양제 등록 버튼 -->
-    <a th:href="@{/supplements/new}">+ 영양제 추가하기</a>
-</div>
+			        <!-- 로그인 상태 -->
+			        <div th:if="${session.loginMember} != null">
+			            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+			            <a th:href="@{/members/me}">내 정보</a>
+			            <a th:href="@{/members/logout}">로그아웃</a>
+			        </div>
+			    </div>
+			</div>
+			
+			
+			<h1>내 영양제 목록</h1>
+			
+			
+			<div>
+			    <!-- 새 영양제 등록 버튼 -->
+			    <a th:href="@{/supplements/new}">+ 영양제 추가하기</a>
+			</div>
 
-<hr/>
+			<hr/>
 
-<table border="1" cellpadding="8">
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>이름</th>
-        <th>브랜드</th>
-        <th>태그</th>
-        <th>메모</th>
-        <th>등록일</th>
-        <th>식약처 제품 연결</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- supplements: List<Supplement> -->
-    <tr th:each="s, stat : ${supplements}">
-        <td th:text="${stat.count}">1</td>
-        <td th:text="${s.name}">제품명</td>
-        <td th:text="${s.brand}">브랜드</td>
-        <td th:text="${s.tags}">태그</td>
-        <td th:text="${s.memo}">메모</td>
-        <td th:text="${s.createdAt}">2025-12-01</td>
+			<table border="1" cellpadding="8">
+			    <thead>
+			    <tr>
+			        <th>번호</th>
+			        <th>이름</th>
+			        <th>브랜드</th>
+			        <th>태그</th>
+			        <th>메모</th>
+			        <th>등록일</th>
+			        <th>식약처 제품 연결</th>
+			    </tr>
+			    </thead>
+			    <tbody>
+			    <!-- supplements: List<Supplement> -->
+			    <tr th:each="s, stat : ${supplements}">
+			        <td th:text="${stat.count}">1</td>
+			        <td th:text="${s.name}">제품명</td>
+			        <td th:text="${s.brand}">브랜드</td>
+			        <td th:text="${s.tags}">태그</td>
+			        <td th:text="${s.memo}">메모</td>
+			        <td th:text="${s.createdAt}">2025-12-01</td>
 
-        <td>
-            <!-- 식약처 제품과 매핑하러 가는 링크 -->
-            <a th:href="@{|/supplements/${s.id}/link|}">
-                식약처 제품 연결
-            </a>
-        </td>
-    </tr>
+			        <td>
+			            <!-- 식약처 제품과 매핑하러 가는 링크 -->
+			            <a th:href="@{|/supplements/${s.id}/link|}">
+			                식약처 제품 연결
+			            </a>
+			        </td>
+			    </tr>
 
-    <!-- 영양제가 하나도 없을 때 -->
-    <tr th:if="${#lists.isEmpty(supplements)}">
-		<td colspan="6">등록된 영양제가 없습니다. 상단의 '영양제 추가하기'를 눌러 등록해보세요.</td>
-	</tr>
-    </tbody>
-</table>
+			    <!-- 영양제가 하나도 없을 때 -->
+			    <tr th:if="${#lists.isEmpty(supplements)}">
+					<td colspan="6">등록된 영양제가 없습니다. 상단의 '영양제 추가하기'를 눌러 등록해보세요.</td>
+				</tr>
+			    </tbody>
+			</table>
+
 
 </body>
 </html>

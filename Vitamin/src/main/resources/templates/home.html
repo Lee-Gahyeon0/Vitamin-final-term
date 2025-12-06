@@ -2,10 +2,46 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>홈</title>
+    <title>비타민 관리 홈</title>
 </head>
 <body>
+	<!-- [공통 헤더] 로그인 상태에 따라 다르게 -->
+	<div class="top-bar">
+	    <!-- 왼쪽 : 홈 -->
+	    <div class="top-left">
+	        <a th:href="@{/}">홈</a>
+	    </div>
 
-<h1>홈</h1>
+	    <!-- 오른쪽 : 로그인/회원가입 or 사용자 정보 -->
+	    <div class="top-right">
+	        <!-- 비로그인 -->
+	        <div th:if="${session.loginMember} == null">
+	            <a th:href="@{/members/login}">로그인</a>
+	            <a th:href="@{/members/register}">회원가입</a>
+	        </div>
+
+	        <!-- 로그인 상태 -->
+	        <div th:if="${session.loginMember} != null">
+	            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+	            <a th:href="@{/members/me}">내 정보</a>
+	            <a th:href="@{/members/logout}">로그아웃</a>
+	        </div>
+	    </div>
+	</div>
+	<hr/>
+
+	
+		<h1>비타민 섭취 관리 홈</h1>
+
+			<p> 메뉴 </p>
+
+			<ul>
+			    <li><a th:href="@{/supplements}">영양제 목록</a></li>
+		    	<li><a th:href="@{/intakes}">내 섭취 기록</a></li>
+			    <li><a th:href="@{/members/me}">내 정보</a></li>
+			    <!-- 필요하면 추가 -->
+		   	 	<li><a th:href="@{/form}">상품 등록 폼(form.html)</a></li>
+		    	<li><a th:href="@{/list}">상품 목록(list.html)</a></li>
+			</ul>
 </body>
 </html>

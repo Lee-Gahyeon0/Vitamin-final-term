@@ -5,43 +5,73 @@
 </head>
 </html>
 <body>
-	<h1>영양제 등록</h1>
+
 	
-	<!-- 목록으로 돌아가기-->
-	<p>
-		<a href="@{/supplements">← 목록으로</a>
-	</p>
-	<form th:action="@{/supplements}" th:object="${supplementForm}" method="post">
+	<!-- [공통 헤더] 로그인 상태에 따라 다르게 -->
+		<div class="top-bar">
+		    <!-- 왼쪽 : 홈 -->
+		    <div class="top-left">
+		        <a th:href="@{/}">홈</a>
+		    </div>
+
+		    <!-- 오른쪽 : 로그인/회원가입 or 사용자 정보 -->
+		    <div class="top-right">
+		        <!-- 비로그인 -->
+		        <div th:if="${session.loginMember} == null">
+		            <a th:href="@{/members/login}">로그인</a>
+		            <a th:href="@{/members/register}">회원가입</a>
+		        </div>
+
+		        <!-- 로그인 상태 -->
+		        <div th:if="${session.loginMember} != null">
+		            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+		            <a th:href="@{/members/me}">내 정보</a>
+		            <a th:href="@{/members/logout}">로그아웃</a>
+		        </div>
+		    </div>
+		</div>
 		
-		<!-- memberId는 로그인 세션 대신 임시로 hidden -->
-		<input type="hidden" th:field="*{memberID}"/>
 		
-			<div>
-				<label for="name">영양제 이름</label>
-				<input type="text" id="name" th:field="*{name}" placeholder="예: 비타민C 1000mg"/>
-			</div>
+		
+		<h1>영양제 등록</h1>
+		
+		<!-- 목록으로 돌아가기-->
+			<p>
+				<a href="@{/supplements">← 목록으로</a>
+			</p>
+			<form th:action="@{/supplements}" th:object="${supplementForm}" method="post">
+				
+				<!-- memberId는 로그인 세션 대신 임시로 hidden -->
+				<input type="hidden" th:field="*{memberID}"/>
+				
+					<div>
+						<label for="name">영양제 이름</label>
+						<input type="text" id="name" th:field="*{name}" placeholder="예: 비타민C 1000mg"/>
+					</div>
 
-		    <div>
-		        <label for="brand">브랜드</label>
-		        <input type="text" id="brand" th:field="*{brand}" placeholder="예: OOO 브랜드"/>
-		    </div>
+				    <div>
+				        <label for="brand">브랜드</label>
+				        <input type="text" id="brand" th:field="*{brand}" placeholder="예: OOO 브랜드"/>
+				    </div>
 
-		    <div>
-		        <label for="tags">태그</label>
-		        <input type="text" id="tags" th:field="*{tags}" placeholder="예: 비타민C,철분"/>
-		    </div>
+				    <div>
+				        <label for="tags">태그</label>
+				        <input type="text" id="tags" th:field="*{tags}" placeholder="예: 비타민C,철분"/>
+				    </div>
 
-		    <div>
-		        <label for="memo">메모</label><br/>
-		        <textarea id="memo" th:field="*{memo}" rows="4" cols="40"
-		                  placeholder="섭취 목적, 시간대, 기타 메모를 적어주세요."></textarea>
-		    </div>
+				    <div>
+				        <label for="memo">메모</label><br/>
+				        <textarea id="memo" th:field="*{memo}" rows="4" cols="40"
+				                  placeholder="섭취 목적, 시간대, 기타 메모를 적어주세요."></textarea>
+				    </div>
 
-		    <div>
-		        <button type="submit">등록하기</button>
-		        <button type="reset">다시 작성</button>
-		    </div>
-	</form>
+				    <div>
+				        <button type="submit">등록하기</button>
+				        <button type="reset">다시 작성</button>
+				    </div>
+			</form>
+		
+	
 	
 </body>
 </html>

@@ -5,27 +5,73 @@
     <title>내 정보</title>
 </head>
 <body>
-	<h1>내 정보</h1>
 	
-	<table border="1">
-	    <tr>
-	        <th>이메일</th>
-	        <td th:text="${member.email}">email</td>
-	    </tr>
-	    <tr>
-	        <th>닉네임</th>
-	        <td th:text="${member.nickname}">nickname</td>
-	    </tr>
-	    <tr>
-	        <th>권한</th>
-	        <td th:text="${member.role}">role</td>
-	    </tr>
-	</table>
+	<!-- [공통 헤더] 로그인 상태에 따라 다르게 -->
+			<div class="top-bar">
+			    <!-- 왼쪽 : 홈 -->
+			    <div class="top-left">
+			        <a th:href="@{/}">홈</a>
+			    </div>
 
-	<p>
-	    <a th:href="@{/}">홈으로</a> |
-	    <a th:href="@{/members/logout}">로그아웃</a>
-	</p>
+			        <!-- 로그인 상태 -->
+			        <div th:if="${session.loginMember} != null">
+			            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+			            <a th:href="@{/members/me}">내 정보</a>
+			            <a th:href="@{/members/logout}">로그아웃</a>
+			        </div>
+			    </div>
+			</div>
+			
+			
+			<h1>내 정보</h1>
+			
+			
+			<!-- 에러 메시지 있으면 보여주기 -->
+			<div th:if="${errorMessage}">
+				    	<p th:text="${errorMessage}" style="color:red;"></p>
+					</div>
+					
+					<form th:action="@{/members/login}" method="post">
+				    	<div>
+				        	<label for="email">이메일</label>
+				        	<input type="email" id="email" name="email" required />
+				    	</div>
 
+				    	<div>
+				        	<label for="password">비밀번호</label>
+				        	<input type="password" id="password" name="password" required />
+				    	</div>
+
+				    	<div>
+				        	<button type="submit">로그인</button>
+				    	</div>
+					</form>
+					
+					<p>
+				    	아직 회원이 아니신가요?
+				    	<a th:href="@{/members/register}">회원가입 하러 가기</a>
+					</p>
+
+				
+				<table border="1">
+				    <tr>
+				        <th>이메일</th>
+				        <td th:text="${member.email}">email</td>
+				    </tr>
+				    <tr>
+				        <th>닉네임</th>
+				        <td th:text="${member.nickname}">nickname</td>
+				    </tr>
+				    <tr>
+				        <th>권한</th>
+				        <td th:text="${member.role}">role</td>
+				    </tr>
+				</table>
+
+				<p>
+				    <a th:href="@{/}">홈으로</a> |
+				    <a th:href="@{/members/logout}">로그아웃</a>
+				</p>
+		
 </body>
 </html>
