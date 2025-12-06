@@ -33,10 +33,15 @@ public class MemberService {
 	public Member register (String email, 
 						    String password, 
 						    String nickname) {
+		
+		System.out.println("=== [register] 호출됨 ===");
+        System.out.println("email = " + email + ", password = " + password + ", nickname = " + nickname);
+        
 		// 이메일 중복 가입 확인
 		Member existing = memberRepository.findByEmail(email);
+		System.out.println("=== [register] existing = " + existing + " ===");
 		if (existing != null) {
-			throw new IllegalArgumentException("이미 가입된 이메일입니다:" + email);
+			throw new IllegalArgumentException("이미 가입된 이메일입니다:" + email);	
 		}
 		
 		// 새 회원 엔티티 생성
@@ -46,7 +51,10 @@ public class MemberService {
         m.setPassword(password);
         m.setNickname(nickname); 
         
-        return memberRepository.save(m);
+        Member saved = memberRepository.save(m);
+        System.out.println("=== [register] 저장 완료, id = " + saved.getId() + " ===");
+
+        return saved;
 	}
 	
 	
