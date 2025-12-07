@@ -67,7 +67,7 @@ public class IntakeLogService {
         log.setMember(member);
         log.setSupplement(supplement);
         log.setDate(today);
-        log.setTimeSlot(timeSlot);  // 엔티티에서 String/Enum 중 뭐 쓰는지에 맞게
+        log.setTimeSlot(timeSlot);  
         log.setTaken(taken);
         log.setMemo(memo);
 

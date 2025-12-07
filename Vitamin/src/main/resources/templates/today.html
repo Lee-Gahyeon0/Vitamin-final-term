@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오늘 복용 기록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<div class="top-bar">
+	    <div class="top-left">
+	        <a th:href="@{/}">홈</a>
+	    </div>
+	    <div class="top-right">
+	        <div th:if="${session.loginMember} == null">
+	            <a th:href="@{/members/login}">로그인</a>
+	            <a th:href="@{/members/register}">회원가입</a>
+	        </div>
+	        <div th:if="${session.loginMember} != null">
+	            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+	            <a th:href="@{/members/me}">내 정보</a>
+	            <a th:href="@{/members/logout}">로그아웃</a>
+	        </div>
+	    </div>
+	</div>
+
+	<h1>오늘 복용 기록</h1>
+	
+	<!-- 영양제 없을 때 -->
+	<div th:if="${!hasSupplements}">
+	    <p>등록된 영양제가 없습니다.</p>
+	    <a th:href="@{/supplements/new}">먼저 내 영양제를 등록하러 가기</a>
+	</div>
+
+	<!-- 영양제 있을 때만 select + 폼 보여주기 -->
+	< th:if="${hasSupplements}">
+		<div th:if="${errorMessage}">
+			    <p th:text="${errorMessage}" style="color:red;"></p>
+			</div>
+
+			<form th:action="@{/intakes/today}" method="post">
+
+			    <div>
+			        <label>영양제 선택</label>
+			        <select name="supplementId" required>
+			            <option value="">-- 선택 --</option>
+			            <option th:each="supp : ${supplements}"
+			                    th:value="${supp.id}"
+			                    th:text="${supp.name}">영양제</option>
+			        </select>
+			    </div>
+
+			    <div>
+			        <label>시간대</label>
+			        <select name="timeSlot" required>
+			            <option value="MORNING">아침</option>
+			            <option value="LUNCH">점심</option>
+			            <option value="DINNER">저녁</option>
+			            <option value="BEFORE_SLEEP">자기 전</option>
+			        </select>
+			    </div>
+
+			    <div>
+			        <label>
+			            <input type="checkbox" name="taken" value="true"/>
+			            복용 완료
+			        </label>
+			    </div>
+
+			    <div>
+			        <label>메모</label><br/>
+			        <textarea name="memo" rows="2" cols="40"></textarea>
+			    </div>
+
+			    <div style="margin-top:10px;">
+			        <button type="submit">기록 추가</button>
+			    </div>
+
+			</form>
+			</div>
+
+
+	
+	<hr/>
+
+	<h2>오늘의 복용 현황</h2>
+
+	<table border="1">
+	    <thead>
+	    <tr>
+	        <th>영양제</th>
+	        <th>시간대</th>
+	        <th>복용 여부</th>
+	        <th>메모</th>
+	    </tr>
+	    </thead>
+	    <tbody>
+	    <tr th:each="log : ${todayLogs}">
+	        <td th:text="${log.supplement.name}"></td>
+	        <td th:text="${log.timeSlot}"></td>
+	        <td th:text="${log.taken} ? '완료' : '미복용'"></td>
+	        <td th:text="${log.memo}"></td>
+	    </tr>
+	    </tbody>
+	</table>
+	
+	<hr/>
+
+	<h2>오늘 복용 상호작용 경고</h2>
+
+	<div th:if="${#lists.isEmpty(interactions)}">
+	    <p>현재 등록된 상호작용 경고는 없습니다.</p>
+	</div>
+
+	<ul th:if="${!#lists.isEmpty(interactions)}">
+	    <li th:each="rule : ${interactions}">
+	        <strong th:text="${rule.severity}">위험도</strong>
+	        :
+	        <span th:text="${rule.message}">메시지</span>
+	        (<span th:text="${rule.tagA}"></span>
+	        /
+	        <span th:text="${rule.tagB}"></span>)
+	    </li>
+	</ul>
+
+
+</body>
+</html>

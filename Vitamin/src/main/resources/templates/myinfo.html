@@ -6,52 +6,15 @@
 </head>
 <body>
 	
-	<!-- [공통 헤더] 로그인 상태에 따라 다르게 -->
 			<div class="top-bar">
 			    <!-- 왼쪽 : 홈 -->
 			    <div class="top-left">
 			        <a th:href="@{/}">홈</a>
 			    </div>
-
-			        <!-- 로그인 상태 -->
-			        <div th:if="${session.loginMember} != null">
-			            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
-			            <a th:href="@{/members/me}">내 정보</a>
-			            <a th:href="@{/members/logout}">로그아웃</a>
-			        </div>
-			    </div>
-			</div>
 			
 			
 			<h1>내 정보</h1>
 			
-			
-			<!-- 에러 메시지 있으면 보여주기 -->
-			<div th:if="${errorMessage}">
-				    	<p th:text="${errorMessage}" style="color:red;"></p>
-					</div>
-					
-					<form th:action="@{/members/login}" method="post">
-				    	<div>
-				        	<label for="email">이메일</label>
-				        	<input type="email" id="email" name="email" required />
-				    	</div>
-
-				    	<div>
-				        	<label for="password">비밀번호</label>
-				        	<input type="password" id="password" name="password" required />
-				    	</div>
-
-				    	<div>
-				        	<button type="submit">로그인</button>
-				    	</div>
-					</form>
-					
-					<p>
-				    	아직 회원이 아니신가요?
-				    	<a th:href="@{/members/register}">회원가입 하러 가기</a>
-					</p>
-
 				
 				<table border="1">
 				    <tr>

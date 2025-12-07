@@ -36,13 +36,16 @@
 		<h1>영양제 등록</h1>
 		
 		<!-- 목록으로 돌아가기-->
-			<p>
-				<a href="@{/supplements">← 목록으로</a>
-			</p>
+				<p>
+				    <a th:href="@{/supplements/list(memberId=${supplementForm.memberId})}">
+				        ← 내 영양제 목록으로
+				    </a>
+				</p>
+		
 			<form th:action="@{/supplements}" th:object="${supplementForm}" method="post">
 				
 				<!-- memberId는 로그인 세션 대신 임시로 hidden -->
-				<input type="hidden" th:field="*{memberID}"/>
+				<input type="hidden" th:field="*{memberId}"/>
 				
 					<div>
 						<label for="name">영양제 이름</label>

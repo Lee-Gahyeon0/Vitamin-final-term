@@ -79,7 +79,7 @@ public class SupplementController {
 	    );
 
 	    // 등록 후 목록으로 리다이렉트 (memberId 유지)
-	    return "redirect:/supplements?memberId=" + form.getMemberId();
+	    return "redirect:/supplements/new?memberId=" + form.getMemberId();
 	}
 	 
 	 
@@ -115,7 +115,7 @@ public class SupplementController {
 	    supplementService.linkRawProduct(supplementId, rawProductId);
 
 	    // 다시 내 영양제 목록으로 (memberId 유지)
-	    return "redirect:/supplements?memberId=" + memberId;
+	    return "redirect:/supplements/list?memberId=" + memberId;
 	}
 
     // ============================

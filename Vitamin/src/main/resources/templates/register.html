@@ -12,16 +12,6 @@
 			    <div class="top-left">
 			        <a th:href="@{/}">홈</a>
 			    </div>
-
-			    <!-- 오른쪽 : 로그인/회원가입 or 사용자 정보 -->
-			    <div class="top-right">
-			        <!-- 비로그인 -->
-			        <div th:if="${session.loginMember} == null">
-			            <a th:href="@{/members/login}">로그인</a>
-			            <a th:href="@{/members/register}">회원가입</a>
-			        </div>
-			    </div>
-			</div>
 			
 			
 			
