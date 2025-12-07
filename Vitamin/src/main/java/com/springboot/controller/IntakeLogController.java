@@ -4,10 +4,14 @@ import com.springboot.domain.IntakeLog;
 import com.springboot.domain.InteractionRule;
 import com.springboot.domain.Member;
 import com.springboot.domain.Supplement;
+import com.springboot.dto.IntakeFormDto;
 import com.springboot.service.IntakeLogService;
 import com.springboot.service.InteractionService;
 import com.springboot.service.SupplementService;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +53,10 @@ public class IntakeLogController {
         model.addAttribute("supplements", mySupplements);
         
         model.addAttribute("hasSupplements", !mySupplements.isEmpty());
-
+        
+        model.addAttribute("intakeForm", new IntakeFormDto());
+        
+        
         // 오늘 복용 기준 상호작용 경고
         List<InteractionRule> interactions =
                 interactionService.checkTodayInteractions(loginMember.getId());
@@ -62,23 +69,42 @@ public class IntakeLogController {
      * 2) 오늘 복용 기록 추가 처리
      */
     @PostMapping("/today")
-    public String addTodayLog(@RequestParam("supplementId") Long supplementId,
-                              @RequestParam("timeSlot") String timeSlot,
-                              @RequestParam(value = "taken", defaultValue = "false") boolean taken,
-                              @RequestParam(value = "memo", required = false) String memo,
+    public String addTodayLog(@ModelAttribute("intakeForm") IntakeFormDto intakeForm,
                               HttpSession session,
                               Model model) {
 
-        Member loginMember = (Member) session.getAttribute("loginMember");
-        if (loginMember == null) {
-            return "redirect:/members/login";
-        }
+    	Member loginMember = (Member) session.getAttribute("loginMember");
+    	if (loginMember == null) {
+    	    return "redirect:/members/login";
+    	}
 
-        try {
-            intakeLogService.addTodayLog(loginMember.getId(), supplementId, timeSlot, taken, memo);
-            return "redirect:/intakes/today";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+    	try {
+    	    intakeLogService.addTodayLog(
+    	            loginMember.getId(),
+    	            intakeForm.getSupplementId(),
+    	            intakeForm.getTimeSlot(),
+    	            intakeForm.isTaken(),
+    	            intakeForm.getMemo()
+    	    );
+    	    return "redirect:/intakes/today";
+
+    	} catch (IllegalArgumentException e) {
+    	    model.addAttribute("errorMessage", e.getMessage());
+    	    
+    	    List<IntakeLog> todayLogs = intakeLogService.getTodayLogs(loginMember.getId());
+    	    model.addAttribute("todayLogs", todayLogs);
+
+    	    List<Supplement> mySupplements = supplementService.getSupplements(loginMember.getId());
+    	    model.addAttribute("supplements", mySupplements);
+    	    model.addAttribute("hasSupplements", !mySupplements.isEmpty());
+
+    	    List<InteractionRule> interactions =
+    	            interactionService.checkTodayInteractions(loginMember.getId());
+    	    model.addAttribute("interactions", interactions);
+
+    	    // 사용자 입력 값 유지
+    	    model.addAttribute("intakeForm", intakeForm);
+
             return "today";
         }
     }
@@ -98,4 +124,6 @@ public class IntakeLogController {
 
         return "history";   
     }
+    
+
 }
