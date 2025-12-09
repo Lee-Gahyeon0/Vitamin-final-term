@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.springboot.domain.Member;
 import com.springboot.domain.RawProduct;
 import com.springboot.domain.Supplement;
+import com.springboot.dto.SupplementFormDto;
 import com.springboot.repository.MemberRepository;
 import com.springboot.repository.RawProductRepository;
 import com.springboot.repository.SupplementRepository;
@@ -33,11 +34,8 @@ public class SupplementService {
     /**
      * 1) 내 영양제 등록
      */
-    public Supplement createSupplement(Long memberId,
-                                       String name,
-                                       String brand,
-                                       String tags,
-                                       String memo) {
+    @Transactional
+    public Supplement createSupplement(Long memberId, SupplementFormDto form) {
 
         // 1. 회원 조회
         Member member = memberRepository.findById(memberId)
@@ -46,10 +44,17 @@ public class SupplementService {
         // 2. supplement 엔티티 생성 및 값 세팅
         Supplement s = new Supplement();
         s.setMember(member);
-        s.setName(name);
-        s.setBrand(brand);
-        s.setTags(tags);
-        s.setMemo(memo);
+        s.setName(form.getName());
+        s.setBrand(form.getBrand());
+        s.setMemo(form.getMemo());
+
+        // tagCodes(List<String>) → "IRON,CALCIUM" 이런 식으로 저장
+        if (form.getTagCodes() != null && !form.getTagCodes().isEmpty()) {
+            String joined = String.join(",", form.getTagCodes());
+            s.setTags(joined);
+        } else {
+            s.setTags("");
+        }
 
         // 3. 저장
         return supplementRepository.save(s);
@@ -82,20 +87,24 @@ public class SupplementService {
      * 4) 영양제 수정
      */
     @Transactional
-    public void updateSupplement(Long id,
-                                 String name,
-                                 String brand,
-                                 String tags,
-                                 String memo) {
+    public void updateSupplement(Long id, SupplementFormDto form) {
 
-        Supplement supplement = findById(id);   
+        Supplement supplement = findById(id);   // 영양제 한 개 조회
 
-        supplement.setName(name);
-        supplement.setBrand(brand);
-        supplement.setTags(tags);
-        supplement.setMemo(memo);
+        supplement.setName(form.getName());
+        supplement.setBrand(form.getBrand());
+        supplement.setMemo(form.getMemo());
+
+        
+        if (form.getTagCodes() != null && !form.getTagCodes().isEmpty()) {
+            String joined = String.join(",", form.getTagCodes());
+            supplement.setTags(joined);
+        } else {
+            supplement.setTags("");
+        }
     }
-   
+
+    
    
     
     

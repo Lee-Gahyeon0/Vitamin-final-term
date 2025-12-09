@@ -69,13 +69,19 @@
 						<div th:if="${brandError}" style="color:red; font-size:0.9em;"th:text="${brandError}"></div>
 				    </div>
 
-				    <div>
-				        <label for="tags">태그</label>
-				        <input type="text" id="tags" th:field="*{tags}" placeholder="예: 비타민C,철분"/>
-						
-						<!-- 오류메시지 -->
-						<div th:if="${tagsError}" style="color:red; font-size:0.9em;"th:text="${tagsError}"></div>					    
-				    </div>
+					<div>
+					    <label>태그</label>
+					    <div th:each="tagOpt : ${tagOptions}">
+					        <label>
+					            <input type="checkbox"
+					                   th:value="${tagOpt}"
+					                   th:field="*{tagCodes}" />
+					            <span th:text="${tagOpt}"></span>
+					        </label>
+					    </div>
+
+					    <div th:if="${tagsError}" style="color:red; font-size:0.9em;"
+					         th:text="${tagsError}"></div>
 
 				    <div>
 				        <label for="memo">메모</label><br/>

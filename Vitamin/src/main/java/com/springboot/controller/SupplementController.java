@@ -19,6 +19,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -33,6 +35,10 @@ import java.util.List;
 public class SupplementController {
 
     private final SupplementService supplementService;
+    
+    private static final List<String> TAG_OPTIONS = List.of(
+            "IRON", "CALCIUM", "VITAMIN_C", "OMEGA3", "MULTIVITAMIN", "LUTEIN"
+    );
 
     public SupplementController(SupplementService supplementService) {
         this.supplementService = supplementService;
@@ -68,8 +74,10 @@ public class SupplementController {
         }
 
         SupplementFormDto form = new SupplementFormDto();
-        form.setMemberId(loginMember.getId());   
+        form.setMemberId(loginMember.getId());  
+        
         model.addAttribute("supplementForm", form);
+        model.addAttribute("tagOptions", TAG_OPTIONS);
 
         return "form";
     }
@@ -102,25 +110,20 @@ public class SupplementController {
             hasError = true;
         }
 
-        // 태그 검사
-        if (form.getTags() == null || form.getTags().trim().isEmpty()) {
-            model.addAttribute("tagsError", "태그를 입력해 주세요.");
+        // 태그 검사: tagCodes 기준
+        if (form.getTagCodes() == null || form.getTagCodes().isEmpty()) {
+            model.addAttribute("tagsError", "최소 한 개 이상의 태그를 선택해 주세요.");
             hasError = true;
         }
 
         if (hasError) {
             model.addAttribute("supplementForm", form);
+            model.addAttribute("tagOptions", TAG_OPTIONS);
             return "form";
         }
 
-        supplementService.createSupplement(
-                memberId,
-                form.getName(),
-                form.getBrand(),
-                form.getTags(),
-                form.getMemo()
-        );
-
+        supplementService.createSupplement(memberId, form);
+        
         // 등록 후 목록으로 (memberId 파라미터 필요 없음)
         return "redirect:/supplements/list";
     }
@@ -178,10 +181,16 @@ public class SupplementController {
         form.setMemberId(supplement.getMember().getId());
         form.setName(supplement.getName());
         form.setBrand(supplement.getBrand());
-        form.setTags(supplement.getTags());
         form.setMemo(supplement.getMemo());
 
+        List<String> tagCodes = new ArrayList<>();
+        if (supplement.getTags() != null && !supplement.getTags().isBlank()) {
+            tagCodes = Arrays.asList(supplement.getTags().split(","));
+        }
+        form.setTagCodes(tagCodes);
+
         model.addAttribute("supplementForm", form);
+        model.addAttribute("tagOptions", TAG_OPTIONS);
 
         return "form";
     }
@@ -206,23 +215,18 @@ public class SupplementController {
             model.addAttribute("brandError", "브랜드를 입력해 주세요.");
             hasError = true;
         }
-        if (form.getTags() == null || form.getTags().trim().isEmpty()) {
-            model.addAttribute("tagsError", "태그를 입력해 주세요.");
+        if (form.getTagCodes() == null || form.getTagCodes().isEmpty()) {
+            model.addAttribute("tagsError", "최소 한 개 이상의 태그를 선택해 주세요.");
             hasError = true;
         }
 
         if (hasError) {
             model.addAttribute("supplementForm", form);
+            model.addAttribute("tagOptions", TAG_OPTIONS);
             return "form";
         }
 
-        supplementService.updateSupplement(
-                id,
-                form.getName(),
-                form.getBrand(),
-                form.getTags(),
-                form.getMemo()
-        );
+        supplementService.updateSupplement(id, form);
 
         return "redirect:/supplements/list";
     }
