@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.domain.Member;
-import com.springboot.domain.RawProduct;
+import com.springboot.domain.NormalizedSupplement;
 import com.springboot.domain.Supplement;
 import com.springboot.dto.SupplementFormDto;
 import com.springboot.repository.MemberRepository;
-import com.springboot.repository.RawProductRepository;
+import com.springboot.repository.NormalizedSupplementRepository;
 import com.springboot.repository.SupplementRepository;
 
 @Service
@@ -19,15 +19,16 @@ public class SupplementService {
 
     private final SupplementRepository supplementRepository;
     private final MemberRepository memberRepository;
-    private final RawProductRepository rawProductRepository;
+    private final NormalizedSupplementRepository normalizedSupplementRepository;
 
     public SupplementService(SupplementRepository supplementRepository,
-                             MemberRepository memberRepository,
-                             RawProductRepository rawProductRepository) {
-        this.supplementRepository = supplementRepository;
-        this.memberRepository = memberRepository;
-        this.rawProductRepository = rawProductRepository;
-    }
+            MemberRepository memberRepository,
+            NormalizedSupplementRepository normalizedSupplementRepository) {
+    	this.supplementRepository = supplementRepository;
+    	this.memberRepository = memberRepository;
+    	this.normalizedSupplementRepository = normalizedSupplementRepository;
+    	}
+
 
     
     
@@ -109,30 +110,30 @@ public class SupplementService {
     
     
     /**
-     * 5) 식약처 RAW 제품에서 제품명으로 검색
+     * 5) 정제테이블에서 제품명으로 검색
      */
     @Transactional(readOnly = true)
-    public List<RawProduct> searchRawProductsByName(String keyword) {
-        return rawProductRepository.findByProductNameContaining(keyword);
+    public List<NormalizedSupplement> searchNormalizedProductsByName(String keyword) {
+        return normalizedSupplementRepository.findByProductNameContaining(keyword);
     }
 
     
     
     /**
-     * 6) 내 영양제와 식약처 RAW 제품 매핑하기
+     * 6) 내 영양제와 정제된 제품 매핑하기
      */
-    public Supplement linkRawProduct(Long supplementId, Long rawProductId) {
+    public Supplement linkNormalizedProduct(Long supplementId, Long normalizedId) {
 
         // (1) 내 영양제 조회
         Supplement supplement = supplementRepository.findById(supplementId)
                 .orElseThrow(() -> new IllegalArgumentException("영양제를 찾을 수 없습니다. id=" + supplementId));
 
-        // (2) 식약처 제품 조회
-        RawProduct rawProduct = rawProductRepository.findById(rawProductId)
-                .orElseThrow(() -> new IllegalArgumentException("식약처 제품을 찾을 수 없습니다. id=" + rawProductId));
+        // (2) 정제된 제품 조회
+        NormalizedSupplement normalized = normalizedSupplementRepository.findById(normalizedId)
+                .orElseThrow(() -> new IllegalArgumentException("정제된 제품을 찾을 수 없습니다. id=" + normalizedId));
 
-        // 연결
-        supplement.setRawProduct(rawProduct);
+        // 연결 (여기 이름은 너 엔티티에 맞게)
+        supplement.setNormalizedSupplement(normalized);
 
         return supplement;
     }

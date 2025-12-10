@@ -72,4 +72,8 @@ public class RawProduct {
     // 레코드 생성 시작
     @Column(name = "created_at", insertable = false, updatable = false)
     private Timestamp createdAt;
+    
+    // 자동 태깅 결과를 저장할 컬럼 (예: "IRON,CALCIUM,PROBIOTIC")
+    @Column(name = "normalized_tags")
+    private String normalizedTags;
 }

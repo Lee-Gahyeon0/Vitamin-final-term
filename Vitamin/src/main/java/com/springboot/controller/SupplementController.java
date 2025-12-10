@@ -37,7 +37,15 @@ public class SupplementController {
     private final SupplementService supplementService;
     
     private static final List<String> TAG_OPTIONS = List.of(
-            "IRON", "CALCIUM", "VITAMIN_C", "OMEGA3", "MULTIVITAMIN", "LUTEIN"
+            "철분",
+            "칼슘",
+            "비타민C",
+            "비타민B",
+            "오메가3",
+            "유산균",
+            "홍삼",
+            "루테인",
+            "멀티비타민"
     );
 
     public SupplementController(SupplementService supplementService) {
