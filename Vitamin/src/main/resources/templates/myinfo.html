@@ -2,39 +2,38 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>내 정보</title>
 </head>
 <body>
-	
-			<div class="top-bar">
-			    <!-- 왼쪽 : 홈 -->
-			    <div class="top-left">
-			        <a th:href="@{/}">홈</a>
-			    </div>
-			
-			
-			<h1>내 정보</h1>
-			
-				
-				<table border="1">
-				    <tr>
-				        <th>이메일</th>
-				        <td th:text="${member.email}">email</td>
-				    </tr>
-				    <tr>
-				        <th>닉네임</th>
-				        <td th:text="${member.nickname}">nickname</td>
-				    </tr>
-				    <tr>
-				        <th>권한</th>
-				        <td th:text="${member.role}">role</td>
-				    </tr>
-				</table>
+    <div class="top-bar">
+        <div class="top-left"><a th:href="@{/}">홈으로</a></div>
+    </div>
 
-				<p>
-				    <a th:href="@{/}">홈으로</a> |
-				    <a th:href="@{/members/logout}">로그아웃</a>
-				</p>
-		
+    <div class="center-container">
+        <div class="auth-card" style="max-width: 500px;">
+            <h1>내 정보</h1>
+            
+            <table class="info-table">
+                <tr>
+                    <th>이메일</th>
+                    <td th:text="${member.email}">user@example.com</td>
+                </tr>
+                <tr>
+                    <th>닉네임</th>
+                    <td th:text="${member.nickname}">홍길동</td>
+                </tr>
+                <tr>
+                    <th>권한</th>
+                    <td th:text="${member.role}">USER</td>
+                </tr>
+            </table>
+
+            <div style="margin-top: 30px;">
+                <a th:href="@{/}" class="custom-btn" style="width: 120px; display:inline-block; margin-right:10px;">홈으로</a>
+                <a th:href="@{/members/logout}" class="custom-btn" style="width: 120px; display:inline-block; background: #999; box-shadow:none;">로그아웃</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

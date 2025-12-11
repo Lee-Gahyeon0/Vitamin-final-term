@@ -73,4 +73,12 @@ public class IntakeLogService {
 
         return intakeLogRepository.save(log);
     }
+    
+    /**
+     * 회원 전체 복용 기록 조회 (CSV 내보내기용)
+     */
+    @Transactional(readOnly = true)
+    public List<IntakeLog> getAllLogsForMember(Long memberId) {
+    	return getHistory(memberId);
+    }
 }

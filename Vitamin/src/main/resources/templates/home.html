@@ -2,46 +2,38 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>비타민 관리 홈</title>
 </head>
 <body>
-	<!-- [공통 헤더] 로그인 상태에 따라 다르게 -->
-	<div class="top-bar">
-	    <!-- 왼쪽 : 홈 -->
-	    <div class="top-left">
-	        <a th:href="@{/}">홈</a>
-	    </div>
+    <div class="top-bar">
+        <div class="top-left"><a th:href="@{/}">홈</a></div>
+        <div class="top-right">
+            <div th:if="${session.loginMember} == null">
+                <a th:href="@{/members/login}">로그인</a>
+                <a th:href="@{/members/register}">회원가입</a>
+            </div>
+            <div th:if="${session.loginMember} != null">
+                <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+                <a th:href="@{/members/me}">내 정보</a>
+                <a th:href="@{/members/logout}">로그아웃</a>
+            </div>
+        </div>
+    </div>
 
-	    <!-- 오른쪽 : 로그인/회원가입 or 사용자 정보 -->
-	    <div class="top-right">
-	        <!-- 비로그인 -->
-	        <div th:if="${session.loginMember} == null">
-	            <a th:href="@{/members/login}">로그인</a>
-	            <a th:href="@{/members/register}">회원가입</a>
-	        </div>
+    <div style="max-width: 600px; margin: 100px auto; text-align: center;">
+        <h1 style="font-size: 40px; margin-bottom: 10px;">💊 비타민 섭취 관리</h1>
+        <p style="color: #666; margin-bottom: 50px;">오늘 먹어야 할 영양제를 잊지 말고 챙기세요!</p>
 
-	        <!-- 로그인 상태 -->
-	        <div th:if="${session.loginMember} != null">
-	            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
-	            <a th:href="@{/members/me}">내 정보</a>
-	            <a th:href="@{/members/logout}">로그아웃</a>
-	        </div>
-	    </div>
-	</div>
-	<hr/>
+        <div style="display: flex; gap: 20px; justify-content: center;">
+            <a th:href="@{/supplements/list}" class="custom-btn" style="width: 200px;">
+                영양제 목록
+            </a>
+            <a th:href="@{/intakes/today}" class="custom-btn" style="width: 200px; background: linear-gradient(45deg, #11998e, #38ef7d);">
+                내 섭취 기록
+            </a>
+        </div>
+    </div>
 
-	
-		<h1>비타민 섭취 관리 홈</h1>
-
-			<p> 메뉴 </p>
-
-			<ul>
-			    <li><a th:href="@{/supplements/list}">영양제 목록</a></li>
-		    	<li><a th:href="@{/intakes/today}">내 섭취 기록</a></li>
-			    <li><a th:href="@{/members/me}">내 정보</a></li>
-			    <!-- 필요하면 추가 -->
-		   	 	<li><a th:href="@{/form}">상품 등록 폼(form.html)</a></li>
-		    	<li><a th:href="@{/list}">상품 목록(list.html)</a></li>
-			</ul>
 </body>
 </html>
