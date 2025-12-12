@@ -10,34 +10,44 @@
         <div class="top-left"><a th:href="@{/}">홈으로</a></div>
     </div>
 
-    <div class="center-container">
-        <div class="auth-card">
-            <h1>로그인</h1>
-            
-            <div th:if="${errorMessage}">
-                <p th:text="${errorMessage}" style="color:red; font-size: 14px; margin-bottom: 15px;"></p>
+    <div class="card-box">
+        <h1>로그인</h1>
+        
+        <script th:inline="javascript">
+        /*<![CDATA[*/
+            var needLogin = /*[[${param.needLogin != null}]]*/ false;
+            if (needLogin) {
+                alert('이 서비스는 회원 전용 서비스입니다.\n로그인 후 이용해주세요.');
+            }
+        /*]]>*/
+        </script>
+
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}" style="color:red; font-size: 14px; margin-bottom: 15px; text-align: center;"></p>
+        </div>
+
+        <form th:action="@{/members/login}" method="post">
+			<input type="hidden" name="redirectURL" th:value="${param.redirectURL}" />
+
+			
+            <div>
+                <label for="email">이메일</label>
+                <input type="email" id="email" name="email" placeholder="example@email.com" required />
             </div>
 
-            <form th:action="@{/members/login}" method="post">
-                <div>
-                    <label for="email">이메일</label>
-                    <input type="email" id="email" name="email" placeholder="example@email.com" required />
-                </div>
+            <div>
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="비밀번호 입력" required />
+            </div>
 
-                <div>
-                    <label for="password">비밀번호</label>
-                    <input type="password" id="password" name="password" placeholder="비밀번호 입력" required />
-                </div>
+            <div class="form-actions">
+                <button type="submit" class="custom-btn">로그인</button>
+            </div>
+        </form>
 
-                <div style="margin-top: 20px;">
-                    <button type="submit" class="custom-btn">로그인</button>
-                </div>
-            </form>
-
-            <p style="margin-top: 20px; font-size: 14px; color: #666;">
-                아직 계정이 없으신가요? <br>
-                <a th:href="@{/members/register}" style="color: #FF512F; font-weight: bold;">회원가입 하기</a>
-            </p>
+        <div class="auth-links" style="text-align: center; margin-top: 20px; font-size: 14px; color: #888;">
+            아직 계정이 없으신가요? <br>
+            <a th:href="@{/members/register}" style="color: #FF512F; font-weight: bold; text-decoration: underline;">회원가입 하기</a>
         </div>
     </div>
 </body>

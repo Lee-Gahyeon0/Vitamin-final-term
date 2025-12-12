@@ -6,100 +6,50 @@
     <title>정규화 영양제 매핑</title>
 </head>
 <body>
-	<div class="top-bar">
-	    <div class="top-left">
-	        <a th:href="@{/}">홈</a>
-	    </div>
+    <div class="top-bar">
+        <div class="top-left"><a th:href="@{/}">홈</a></div>
+    </div>
 
-	    <div class="top-right">
-	        <div th:if="${session.loginMember} == null">
-	            <a th:href="@{/members/login}">로그인</a>
-	            <a th:href="@{/members/register}">회원가입</a>
-	        </div>
-
-	        <div th:if="${session.loginMember} != null">
-	            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
-	            <a th:href="@{/members/me}">내 정보</a>
-	            <a th:href="@{/members/logout}">로그아웃</a>
-	        </div>
-	    </div>
-	</div>
-
-	<h1 th:text="'[' + ${supplement.name} + '] 정규화 영양제 매핑'">정규화 영양제 매핑</h1>
-
-	<p>
-	    <a th:href="@{/supplements/list}" class="custom-btn btn-sub">← 내 영양제 목록으로</a>
-	</p>
-
-	<p>
-	    매핑할 내 영양제 ID:
-	    <strong th:text="${supplementId}">1</strong>
-	</p>
-
-	<hr/>
-
-	<form th:action="@{|/supplements/${supplementId}/link|}" method="get">
-	    <label for="type">검색 기준</label>
-	    <select id="type" name="type">
-	        <option value="name" th:selected="${searchType == 'name'}">제품명</option>
-	        <option value="company" th:selected="${searchType == 'company'}">회사명</option>
-	        <option value="tag" th:selected="${searchType == 'tag'}">태그</option>
-	    </select>
-
-	    <label for="keyword">검색어</label>
-	    <input type="text" id="keyword" name="keyword"
-	           th:value="${keyword}" placeholder="예: 비타민C / 회사명 / 철분"/>
+	<h1 th:text="'[' + ${supplement.name} + '] 제품 연결'"></h1>
+	
+    <div class="center-box">
+        <p><a th:href="@{/supplements/list}" class="custom-btn btn-gray btn-sm">← 뒤로가기</a></p>
         
-        <button type="submit" class="custom-btn btn-main">검색</button>
-	</form>
+        <div class="card-box" style="margin-top: 20px; padding: 20px;">
+            <form th:action="@{|/supplements/${supplementId}/link|}" method="get" style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+                <select name="type" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                    <option value="name" th:selected="${searchType == 'name'}">제품명</option>
+                    <option value="company" th:selected="${searchType == 'company'}">회사명</option>
+                </select>
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="검색어 입력" style="padding: 10px; width: 200px; border-radius: 8px; border: 1px solid #ddd;"/>
+                <button type="submit" class="custom-btn" style="margin: 0; min-width: 80px;">검색</button>
+            </form>
+        </div>
 
-	<hr/>
-
-	<div th:if="${products != null}">
-	    <h2>
-	        검색 결과
-	        <span th:if="${keyword != null}">
-	            (키워드: "<span th:text="${keyword}">검색어</span>")
-	        </span>
-	    </h2>
-
-	    <table border="1">
-	        <thead>
-	        <tr>
-	            <th>선택</th>
-	            <th>제품ID</th>
-	            <th>제품명</th>
-	            <th>회사명</th>
-	            <th>태그</th>
-	            <th>주된 기능성</th>
-	        </tr>
-	        </thead>
-	        <tbody>
-	        <tr th:each="p : ${products}">
-	            <td>
-	                <form th:action="@{|/supplements/${supplementId}/link|}" method="post">
-	                    <input type="hidden" name="normalizedId" th:value="${p.id}"/>
-                        <button type="submit" class="custom-btn btn-sub btn-sm">이 제품으로 연결</button>
-	                </form>
-	            </td>
-	            <td th:text="${p.id}">1</td>
-	            <td th:text="${p.productName}">제품명</td>
-	            <td th:text="${p.companyName}">회사명</td>
-	            <td th:text="${p.tags}">철분,비타민C</td>
-	            <td th:text="${p.mainFunction}">기능성 설명</td>
-	        </tr>
-
-	        <tr th:if="${#lists.isEmpty(products)}">
-	            <td colspan="6">검색 결과가 없습니다.</td>
-	        </tr>
-	        </tbody>
-	    </table>
-	</div>
-
-	<div th:if="${products == null}">
-	    <p>위에서 검색 기준과 검색어를 입력하고 검색 버튼을 눌러주세요.</p>
-	</div>
-
-
+        <div th:if="${products != null}">
+            <h2>검색 결과</h2>
+            <table class="styled-table">
+                <thead>
+                    <tr><th>제품 정보</th><th>주된 기능성</th><th>선택</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${products}">
+                        <td style="text-align: left;">
+                            <strong th:text="${p.productName}" style="font-size: 16px;"></strong><br>
+                            <span th:text="${p.companyName}" style="color:gray; font-size:13px;"></span>
+                        </td>
+                        <td th:text="${p.mainFunction}" style="font-size: 13px;"></td>
+                        <td>
+                            <form th:action="@{|/supplements/${supplementId}/link|}" method="post">
+                                <input type="hidden" name="normalizedId" th:value="${p.id}"/>
+                                <button type="submit" class="custom-btn btn-sm">연결</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(products)}"><td colspan="3">검색 결과가 없습니다.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

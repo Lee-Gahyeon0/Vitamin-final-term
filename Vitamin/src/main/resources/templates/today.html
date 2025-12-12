@@ -2,164 +2,173 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>오늘 복용 기록</title>
 </head>
-<hr>
-	<div class="top-bar">
-	    <div class="top-left">
-	        <a th:href="@{/}">홈</a>
-	    </div>
-	    <div class="top-right">
-	        <div th:if="${session.loginMember} == null">
-	            <a th:href="@{/members/login}">로그인</a>
-	            <a th:href="@{/members/register}">회원가입</a>
-	        </div>
-	        <div th:if="${session.loginMember} != null">
-	            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
-	            <a th:href="@{/members/me}">내 정보</a>
-	            <a th:href="@{/members/logout}">로그아웃</a>
-	        </div>
-	    </div>
-	</div>
+<body>
+<div class="top-bar">
+    <div class="top-left"><a th:href="@{/}">홈</a></div>
+    <div class="top-right">
+        <div th:if="${session.loginMember} != null">
+            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+            <a th:href="@{/members/logout}">로그아웃</a>
+        </div>
+    </div>
+</div>
 
-	<h1>오늘 복용 기록</h1>
-	
-	<div th:if="${!hasSupplements}">
-	    등록된 영양제가 없습니다.<br />
-        <a th:href="@{/supplements/new}" class="custom-btn btn-main">먼저 내 영양제를 등록하러 가기</a>
-	</div>
+<h1>오늘 복용 기록</h1>
 
-	<div th:if="${hasSupplements}">
-	    <form th:action="@{/intakes/today}" method="post" th:object="${intakeForm}" class="intake-form">
+<div class="card-box">
 
-	        <div class="form-row">
-	            <label for="supplement">영양제 선택</label>
-	            <select id="supplement" th:field="*{supplementId}">
-	                <option value="">-- 선택 --</option>
-	                <option th:each="s : ${supplements}"
-	                        th:value="${s.id}"
-	                        th:text="${s.name}">
-	                </option>
-	            </select>
-	        </div>
+    <!-- 에러 메시지 -->
+    <div th:if="${errorMessage}" style="color:#d9534f; font-weight:bold; margin-bottom: 12px;"
+         th:text="${errorMessage}">
+        에러 메시지
+    </div>
 
-	        <div class="form-row">
-	            <label for="timeSlot">시간대</label>
-	            <select id="timeSlot" th:field="*{timeSlot}">
-	                <option value="MORNING">아침</option>
-	                <option value="LUNCH">점심</option>
-	                <option value="EVENING">저녁</option>
-	                <option value="BEDTIME">취침 전</option>
-	            </select>
-	        </div>
+    <!-- 영양제 없을 때 -->
+    <div th:if="${!hasSupplements}" style="text-align: center;">
+        <p>등록된 영양제가 없습니다.</p>
+        <a th:href="@{/supplements/new}" class="custom-btn">내 영양제 등록하러 가기</a>
+    </div>
 
-	        <div class="form-row">
-	            <label>
-	                <input type="checkbox" th:field="*{taken}" />
-	                복용 완료
-	            </label>
-	        </div>
+    <!-- 영양제 있을 때 -->
+    <div th:if="${hasSupplements}">
+        <form th:action="@{/intakes/today}" method="post" th:object="${intakeForm}">
+            <div class="form-row">
+                <label>영양제 선택</label>
+                <select th:field="*{supplementId}">
+                    <option value="">-- 선택하세요 --</option>
+                    <option th:each="s : ${supplements}"
+                            th:value="${s.id}"
+                            th:text="${s.name}">
+                    </option>
+                </select>
+            </div>
 
-	        <div class="form-row">
-	            <label for="memo">메모</label>
-	            <textarea id="memo" th:field="*{memo}"></textarea>
-	        </div>
+            <div class="form-row" style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>시간대</label>
+                    <select th:field="*{timeSlot}">
+                        <option value="MORNING">아침</option>
+                        <option value="LUNCH">점심</option>
+                        <option value="EVENING">저녁</option>
+                        <option value="BEDTIME">취침 전</option>
+                    </select>
+                </div>
 
-	        <div class="form-row">
-                <button type="submit" class="custom-btn btn-main">기록 추가</button>
-	        </div>
-	    </form>
-	</div>
+                <div style="flex: 1; display: flex; align-items: center; margin-top: 25px;">
+                    <label style="cursor: pointer;">
+                        <input type="checkbox" th:field="*{taken}" style="width: auto; margin-right: 5px;">
+                        복용 완료
+                    </label>
+                </div>
+            </div>
 
+            <div class="form-row">
+                <label>메모</label>
+                <textarea th:field="*{memo}" placeholder="특이사항 입력" style="height: 60px;"></textarea>
+            </div>
 
-	
-	<hr/>
+            <div style="text-align: center;">
+                <button type="submit" class="custom-btn">기록 추가</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-	<h2>오늘의 복용 현황</h2>
+<div class="center-box">
 
-	<table border="1">
-	    <thead>
-	    <tr>
-	        <th>영양제</th>
-	        <th>시간대</th>
-	        <th>복용 여부</th>
-	        <th>메모</th>
-	    </tr>
-	    </thead>
-	    <tbody>
-	    <tr th:each="log : ${todayLogs}">
-	        <td th:text="${log.supplement.name}"></td>
-	        <td th:text="${log.timeSlot}"></td>
-	        <td th:text="${log.taken} ? '완료' : '미복용'"></td>
-	        <td th:text="${log.memo}"></td>
-	    </tr>
-	    </tbody>
-	</table>
-	
-	<hr/>
-	
-	<h2>오늘 복용 상호작용 경고</h2>
+    <!-- ✅ 통계(복용률 소수점 1자리) -->
+    <div class="card-box" style="margin-bottom: 20px;">
+        <h2 style="margin-top:0;">요약 통계</h2>
+        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
+            <div style="flex:1; min-width: 180px;">
+                <strong>전체 기록 수:</strong>
+                <span th:text="${totalLogs}">0</span>
+            </div>
+            <div style="flex:1; min-width: 180px;">
+                <strong>복용 완료:</strong>
+                <span th:text="${takenCount}">0</span>
+            </div>
+            <div style="flex:1; min-width: 180px;">
+                <strong>복용률:</strong>
+                <span th:text="${#numbers.formatDecimal(takenRate, 1, 1)} + '%'">0.0%</span>
+            </div>
+        </div>
+    </div>
 
-		<div th:if="${#lists.isEmpty(interactions)}">
-		    <p>현재 등록된 상호작용 경고는 없습니다.</p>
-		</div>
+    <h2>오늘의 복용 현황</h2>
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>영양제</th>
+            <th>시간대</th>
+            <th>상태</th>
+            <th>메모</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="log : ${todayLogs}">
+            <td th:text="${log.supplement != null ? log.supplement.name : '-'}">영양제</td>
+            <td th:text="${log.timeSlot}">시간대</td>
+            <td>
+                <span th:if="${log.taken}" style="color: green; font-weight: bold;">완료</span>
+                <span th:unless="${log.taken}" style="color: red;">미복용</span>
+            </td>
+            <td th:text="${log.memo}">메모</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(todayLogs)}">
+            <td colspan="4">오늘 기록이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
 
-		<ul th:if="${!#lists.isEmpty(interactions)}">
-		    <li th:each="rule : ${interactions}">
-		        <strong th:text="${rule.severity}">위험도</strong>
-		        :
-		        <span th:text="${rule.message}">메시지</span>
-		        (<span th:text="${rule.tagA}"></span>
-		        /
-		        <span th:text="${rule.tagB}"></span>)
-		    </li>
-		</ul>
-		
-	
-	<hr>
-		<h2>지금까지 복용 기록</h2>
+    <!-- 상호작용 경고 -->
+    <div th:if="${!#lists.isEmpty(interactions)}"
+         style="background: #fff0f0; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: left;">
+        <h3 style="color: #d9534f; margin: 0 0 10px 0;">⚠️ 상호작용 경고</h3>
+        <ul style="list-style: disc; padding-left: 20px;">
+            <li th:each="rule : ${interactions}">
+                <strong th:text="${rule.severity}"></strong> :
+                <span th:text="${rule.message}"></span>
+            </li>
+        </ul>
+    </div>
 
-	   <div th:if="${#lists.isEmpty(allLogs)}">
-	       아직 등록된 복용 기록이 없습니다.
-	   </div>
+    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #ddd;">
 
-	   <table th:if="${!#lists.isEmpty(allLogs)}">
-	       <thead>
-	       <tr>
-	           <th>날짜</th>
-	           <th>영양제</th>
-	           <th>브랜드</th>
-	           <th>복용여부</th>
-	           <th>메모</th>
-	       </tr>
-	       </thead>
-	       <tbody>
-	       <tr th:each="log : ${allLogs}">
-	           <td th:text="${log.Date}">2025-01-01</td>
-	           <td th:text="${log.supplement != null ? log.supplement.name : ''}">영양제</td>
-	           <td th:text="${log.supplement != null ? log.supplement.brand : ''}">브랜드</td>
-	           <td th:text="${log.taken}">true</td> <td th:text="${log.memo}">메모</td>
-	       </tr>
-	       </tbody>
-	   </table>
-		
-		<div th:if="${totalLogs > 0}">
-		    <p>
-		        지금까지 총 <span th:text="${totalLogs}">0</span>번 기록 중<br>
-		        실제로 복용한 기록은 <span th:text="${takenCount}">0</span>번,
-		        복용률은
-		        <span th:text="${#numbers.formatDecimal(takenRate, 1, 1)}">0.0</span>% 입니다.
-		    </p>
-		</div>
-	</hr>
-	
-	
+    <h2>전체 기록 (히스토리)</h2>
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>날짜</th>
+            <th>영양제</th>
+            <th>브랜드</th>
+            <th>시간대</th>
+            <th>상태</th>
+            <th>메모</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="log : ${allLogs}">
+            <td th:text="${log.date}">2025-12-12</td>
+            <td th:text="${log.supplement != null ? log.supplement.name : '-'}">영양제</td>
+            <td th:text="${log.supplement != null ? log.supplement.brand : '-'}">브랜드</td>
+            <td th:text="${log.timeSlot}">MORNING</td>
+            <td th:text="${log.taken} ? '복용' : '미복용'">복용</td>
+            <td th:text="${log.memo}">메모</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(allLogs)}">
+            <td colspan="6">기록이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
 
-	
-	<a th:href="@{/intakes/export}" class="custom-btn btn-sub">
-	    복용 기록 CSV로 받기
-	</a>
+    <div style="margin-top: 20px;">
+        <a th:href="@{/intakes/export}" class="custom-btn btn-gray">CSV 다운로드</a>
+    </div>
+</div>
 
 </body>
 </html>

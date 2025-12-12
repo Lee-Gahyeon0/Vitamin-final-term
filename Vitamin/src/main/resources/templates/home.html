@@ -21,18 +21,42 @@
         </div>
     </div>
 
-    <div style="max-width: 600px; margin: 100px auto; text-align: center;">
-        <h1 style="font-size: 40px; margin-bottom: 10px;">💊 비타민 섭취 관리</h1>
-        <p style="color: #666; margin-bottom: 50px;">오늘 먹어야 할 영양제를 잊지 말고 챙기세요!</p>
+    <div style="text-align: center; margin-top: 60px; margin-bottom: 40px;">
+        <h1 style="margin-bottom: 10px;">💊 비타민 섭취 관리</h1>
+        <p style="color: #666; font-size: 16px;">
+            오늘 먹어야 할 영양제를 잊지 말고 챙기세요!
+        </p>
+    </div>
 
-        <div style="display: flex; gap: 20px; justify-content: center;">
-            <a th:href="@{/supplements/list}" class="custom-btn" style="width: 200px;">
-                영양제 목록
-            </a>
-            <a th:href="@{/intakes/today}" class="custom-btn" style="width: 200px; background: linear-gradient(45deg, #11998e, #38ef7d);">
-                내 섭취 기록
+    <div class="home-container">
+        
+        <div class="home-card">
+            <div class="home-icon">💊</div>
+            <h2>내 영양제</h2>
+            <p>
+                현재 보유 중인 영양제를 등록하고<br>
+                브랜드, 태그, 메모를<br>
+                한눈에 관리해보세요.
+            </p>
+            <a th:href="@{/supplements/list}" class="custom-btn" style="width: 80%;">
+                영양제 관리하러 가기
             </a>
         </div>
+
+        <div class="home-card">
+            <div class="home-icon">📝</div>
+            <h2>오늘의 기록</h2>
+            <p>
+                오늘 아침, 점심, 저녁에<br>
+                영양제를 잘 챙겨 드셨나요?<br>
+                매일매일 기록을 남겨보세요.
+            </p>
+            <a th:href="@{/intakes/today}" class="custom-btn" 
+               style="width: 80%; background: linear-gradient(45deg, #11998e, #38ef7d);">
+                내 섭취 기록하기
+            </a>
+        </div>
+
     </div>
 
 </body>

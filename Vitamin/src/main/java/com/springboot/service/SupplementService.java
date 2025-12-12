@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,8 +28,9 @@ public class SupplementService {
     private final SupplementRepository supplementRepository;
     private final MemberRepository memberRepository;
     private final NormalizedSupplementRepository normalizedSupplementRepository;
-    
-    private static final String UPLOAD_DIR = "C:/vitamin-uploads";
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;   // C:/vitamin-uploads
 
     public SupplementService(SupplementRepository supplementRepository,
                              MemberRepository memberRepository,
@@ -37,7 +39,7 @@ public class SupplementService {
         this.memberRepository = memberRepository;
         this.normalizedSupplementRepository = normalizedSupplementRepository;
     }
-    
+
     
  // =========================
     // 1) 내 영양제 등록
@@ -80,13 +82,13 @@ public class SupplementService {
         return saved;
     }
     
-    //=========================
-    // 이미지 파일 실제 저장 담당 메서드
+    // =========================
+    // 이미지 파일 저장 
     // =========================
     private String storeImageFile(MultipartFile file) {
         try {
             // 저장 폴더 없으면 생성
-            Path uploadPath = Paths.get(UPLOAD_DIR);
+            Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
@@ -103,12 +105,15 @@ public class SupplementService {
             Path target = uploadPath.resolve(storedFileName);
             file.transferTo(target.toFile());
 
-            return "/uploads/" + storedFileName;
+            // URL 리턴 
+            return "/vitamin-images/" + storedFileName;
 
         } catch (IOException e) {
             throw new RuntimeException("이미지 파일 저장 중 오류가 발생했습니다.", e);
         }
     }
+
+ 
 
 
 
@@ -204,18 +209,49 @@ public class SupplementService {
             supplement.setTags("");
         }
 
+        // 새이미지 처리
+        MultipartFile imageFile = form.getImageFile();
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // 기존 파일 삭제
+            String oldPath = supplement.getImagePath();
+            if (oldPath != null && oldPath.startsWith("/vitamin-images/")) {
+                String oldFileName = oldPath.substring("/vitamin-images/".length());
+                try {
+                    Files.deleteIfExists(Paths.get(uploadDir, oldFileName));
+                } catch (IOException e) {
+                    System.out.println("기존 이미지 삭제 실패: " + e.getMessage());
+                }
+            }
+
+            // 새 파일 저장
+            String newPath = storeImageFile(imageFile);
+            supplement.setImagePath(newPath);
+        }
+
         // 이름/브랜드 바뀌었으면 자동 연결 다시 시도
         autoLinkNormalizedSupplement(supplement);
     }
+
 
     // =========================
     // 8) 삭제 (소프트 삭제)
     // =========================
     @Transactional
     public void deleteSupplement(Long id) {
-        // 물리 삭제 대신 소프트 삭제 플래그만 변경
+
         Supplement supplement = supplementRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new IllegalArgumentException("영양제를 찾을 수 없습니다. id=" + id));
+
+        // 이미지 삭제
+        String imagePath = supplement.getImagePath();
+        if (imagePath != null && imagePath.startsWith("/vitamin-images/")) {
+            String fileName = imagePath.substring("/vitamin-images/".length());
+            try {
+                Files.deleteIfExists(Paths.get(uploadDir, fileName));  // uploadDir은 @Value 주입된 거
+            } catch (IOException e) {
+                System.out.println("이미지 삭제 실패: " + e.getMessage());
+            }
+        }
 
         supplement.setDeleted(true);
     }

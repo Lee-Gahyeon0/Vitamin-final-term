@@ -5,6 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class LoginCheckInterceptor implements HandlerInterceptor {
 
     @Override
@@ -12,17 +15,21 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
 
-        // 기존 세션 있으면 가져오고, 없으면 null
         HttpSession session = request.getSession(false);
 
-        // 세션 없거나, 로그인 정보 없으면 → 로그인 페이지로
+        // 로그인 안됨 → 팝업 띄우고 로그인으로 + 원래 URL 저장(쿼리스트링까지)
         if (session == null || session.getAttribute("loginMember") == null) {
-            response.sendRedirect("/members/login");
+
+            String uri = request.getRequestURI();        // /supplements/3/edit
+            String qs = request.getQueryString();        // memberId=1  (없을 수도 있음)
+            String fullUrl = (qs == null) ? uri : (uri + "?" + qs);
+
+            String redirectURL = URLEncoder.encode(fullUrl, StandardCharsets.UTF_8);
+
+            response.sendRedirect("/members/login?needLogin=true&redirectURL=" + redirectURL);
             return false;
         }
 
-        // 로그인 되어 있으면 통과
         return true;
     }
 }
-

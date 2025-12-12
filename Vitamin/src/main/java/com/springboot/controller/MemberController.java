@@ -78,22 +78,26 @@ public class MemberController {
     public String login(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
+            @RequestParam(value = "redirectURL", required = false) String redirectURL,
             HttpSession session,
             Model model
     ) {
         try {
             Member loginMember = memberService.login(email, password);
-            
-            // 세션에 로그인 회원 정보 저장
             session.setAttribute("loginMember", loginMember);
-            
-            // 로그인 성공 → 홈으로
+
+            // 원래 가려던 페이지가 있으면 그쪽으로 복귀
+            if (redirectURL != null && !redirectURL.isBlank()) {
+                return "redirect:" + redirectURL;
+            }
+
             return "redirect:/";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "login";
         }
     }
+
     
 
     /**

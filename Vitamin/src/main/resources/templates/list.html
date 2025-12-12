@@ -7,18 +7,15 @@
 </head>
 <body>
 
-    <!-- 상단 공통 헤더 -->
     <div class="top-bar">
         <div class="top-left">
             <a th:href="@{/}">홈</a>
         </div>
         <div class="top-right">
-            <!-- 비로그인 -->
             <div th:if="${session.loginMember} == null">
                 <a th:href="@{/members/login}">로그인</a>
                 <a th:href="@{/members/register}">회원가입</a>
             </div>
-            <!-- 로그인 -->
             <div th:if="${session.loginMember} != null">
                 <span th:text="${session.loginMember.nickname} + ' 님'"></span>
                 <a th:href="@{/members/me}">내 정보</a>
@@ -29,14 +26,12 @@
 
     <h1>내 영양제 목록</h1>
 
-    <!-- 새 영양제 등록 버튼 -->
     <div style="text-align: center; margin-bottom: 40px;">
-        <a th:href="@{/supplements/new}" class="custom-btn" style="width: 200px;">
+        <a th:href="@{/supplements/new}" class="custom-btn">
             + 새 영양제 등록
         </a>
     </div>
 
-    <!-- 영양제가 하나도 없을 때 -->
     <div th:if="${#lists.isEmpty(supplements)}"
          style="text-align: center; color: #888; margin-top: 50px;">
         <p>
@@ -45,96 +40,67 @@
         </p>
     </div>
 
-    <!-- 영양제 카드 그리드 -->
     <div class="card-grid" th:if="${!#lists.isEmpty(supplements)}">
 
-        <!-- s : Supplement, stat : 루프 상태(번호용) -->
         <div class="supplement-card" th:each="s, stat : ${supplements}">
 
-            <!-- 상단: 번호 + 이름 -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size:12px; color:#999;" th:text="${stat.count}">1</span>
-                <div class="card-title" th:text="${s.name}">제품명</div>
+            <div class="card-badge" th:text="${stat.count}">1</div>
+
+            <img th:if="${s.imagePath != null}"
+                 th:src="${s.imagePath}"
+                 alt="제품 이미지"
+                 class="card-img"/>
+            <div th:if="${s.imagePath == null}"
+                 class="card-img"
+                 style="display:flex; align-items:center; justify-content:center; color:#aaa;">
+                No Img
             </div>
 
-            <!-- 브랜드 -->
+            <div class="card-title" th:text="${s.name}">제품명</div>
             <div class="card-brand" th:text="${s.brand}">브랜드명</div>
 
-            <!-- 외관(이미지) -->
-            <div style="margin: 10px 0;">
-                <img th:if="${s.imagePath != null}"
-                     th:src="${s.imagePath}"
-                     alt="제품 이미지"
-                     class="card-img"/>
-                <div th:if="${s.imagePath == null}"
-                     class="card-img"
-                     style="display:flex; align-items:center; justify-content:center; color:#aaa;">
-                    No Image
-                </div>
-            </div>
-
-            <!-- 태그 (콤마로 분리해서 칩 형태로 출력 가능) -->
             <div class="card-tags" style="margin-bottom: 10px;">
                 <span th:if="${s.tags == null or #strings.isEmpty(s.tags)}"
-                      style="font-size: 12px; color:#999;">
-                    태그 없음
+                      style="font-size: 12px; color:#ccc;">
+                    -
                 </span>
-
                 <span th:each="tag : ${#strings.listSplit(s.tags, ',')}"
                       th:text="${tag}"
-                      class="tag-pill"
-                      style="display:inline-block; margin-right:4px; margin-bottom:4px;
-                             padding:2px 8px; border-radius:12px; font-size:12px;
-                             background:#f5f5f5; color:#555;">
+                      class="tag-pill">
                     태그
                 </span>
             </div>
 
-            <!-- 메모 -->
-            <p style="font-size: 13px; color: #666; margin-bottom: 12px; min-height: 40px;">
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px; height: 40px; overflow: hidden;">
                 <span th:text="${s.memo}">메모 내용</span>
             </p>
 
-            <!-- 식약처 정보 요약 -->
-            <div style="font-size: 12px; color:#444; margin-bottom: 12px; line-height:1.5;">
-                <!-- 연결되어 있을 때 -->
+            <div style="font-size: 12px; color:#555; margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 10px; width: 100%; box-sizing: border-box;">
                 <div th:if="${s.normalizedSupplement != null}">
                     <strong th:text="${s.normalizedSupplement.productName}">제품명</strong><br/>
-                    <span th:text="${s.normalizedSupplement.companyName}">업소명</span><br/>
-                    <span th:text="${s.normalizedSupplement.mainFunction}">
-                        주요 기능성 설명
-                    </span>
+                    <span th:text="${s.normalizedSupplement.companyName}" style="color:#888;">업소명</span>
+                    <div th:text="${s.normalizedSupplement.mainFunction}" style="margin-top:5px; color:#444;">주요 기능성</div>
                 </div>
-
-                <!-- 아직 연결 안 되어 있을 때 -->
                 <div th:if="${s.normalizedSupplement == null}" style="color:#999;">
-                    아직 식약처 영양제 정보가 연결되지 않았습니다.
+                    식약처 정보 미연결
                 </div>
             </div>
 
-            <!-- 버튼 영역 -->
             <div class="card-actions">
-
-                <!-- 식약처 연결 상태에 따른 버튼 -->
                 <div style="margin-bottom: 10px;">
                     <a th:if="${s.normalizedSupplement == null}"
                        th:href="@{|/supplements/${s.id}/link|}"
-                       style="color: #FF512F; font-size: 13px; font-weight: bold;
-                              border:1px solid #FF512F; padding:4px 8px;
-                              border-radius:15px;">
-                        ⚠️ 식약처 정보 연결하기
+                       class="status-link warning">
+                       ⚠️ 식약처 정보 연결하기
                     </a>
 
                     <a th:if="${s.normalizedSupplement != null}"
                        th:href="@{|/supplements/${s.id}/link|}"
-                       style="color: green; font-size: 13px; font-weight: bold;
-                              border:1px solid green; padding:4px 8px;
-                              border-radius:15px;">
-                        ✅ 연결됨 (수정)
+                       class="status-link success">
+                       ✅ 연결됨 (정보 수정)
                     </a>
                 </div>
 
-                <!-- 수정 / 삭제 -->
                 <a th:href="@{/supplements/{id}/edit(id=${s.id}, memberId=${memberId})}"
                    class="custom-btn btn-sm">
                     수정
@@ -144,16 +110,11 @@
                       method="post"
                       style="display:inline;">
                     <button type="submit"
-                            class="custom-btn btn-sm"
-                            onclick="return confirm('정말 삭제할까요?');"
-                            style="background: #999; box-shadow:none;">
+                            class="custom-btn btn-sm btn-gray"
+                            onclick="return confirm('정말 삭제할까요?');">
                         삭제
                     </button>
                 </form>
             </div>
-        </div><!-- /.supplement-card -->
-
-    </div><!-- /.card-grid -->
-
-</body>
+        </div></div></body>
 </html>

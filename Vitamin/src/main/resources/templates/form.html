@@ -1,103 +1,67 @@
 <!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="URF-8">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
-	<title>영양제 등록</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>영양제 등록</title>
 </head>
-</html>
 <body>
+    <div class="top-bar">
+        <div class="top-left"><a th:href="@{/}">홈</a></div>
+    </div>
+        
+    <h1>영양제 등록</h1>
+    
+    <div class="center-box">
+        <a th:href="@{/supplements/list}" class="custom-btn btn-gray btn-sm">← 목록으로 돌아가기</a>
+    </div>
 
-	
-	<div class="top-bar">
-		    <div class="top-left">
-		        <a th:href="@{/}">홈</a>
-		    </div>
+    <div class="card-box" style="margin-top: 20px;">
+        <form th:object="${supplementForm}"
+              th:action="${supplementForm.id} == null ? @{/supplements} : @{/supplements/{id}/edit(id=${supplementForm.id})}"
+              method="post" enctype="multipart/form-data">
 
-		    <div class="top-right">
-		        <div th:if="${session.loginMember} == null">
-		            <a th:href="@{/members/login}">로그인</a>
-		            <a th:href="@{/members/register}">회원가입</a>
-		        </div>
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{memberId}" />
 
-		        <div th:if="${session.loginMember} != null">
-		            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
-		            <a th:href="@{/members/me}">내 정보</a>
-		            <a th:href="@{/members/logout}">로그아웃</a>
-		        </div>
-		    </div>
-		</div>
-		
-		
-		
-		<h1>영양제 등록</h1>
-		
-		<p>
-				    <a th:href="@{/supplements/list}" class="custom-btn btn-sub">
-				        ← 내 영양제 목록으로
-				    </a>
-				</p>
+            <div class="form-row">
+                <label>영양제 이름</label>
+                <input type="text" th:field="*{name}" placeholder="예: 비타민C 1000mg"/>
+                <div th:if="${nameError}" style="color:red; font-size:13px;" th:text="${nameError}"></div>
+            </div>
 
-		
-				<form th:object="${supplementForm}"
-				      th:action="${supplementForm.id} == null ?
-				                 @{/supplements} :
-				                 @{/supplements/{id}/edit(id=${supplementForm.id})}"
-				      method="post"
-				      enctype="multipart/form-data">
+            <div class="form-row">
+                <label>브랜드</label>
+                <input type="text" th:field="*{brand}" placeholder="브랜드명"/>
+            </div>
 
-				    <input type="hidden" th:field="*{id}" />
-				    <input type="hidden" th:field="*{memberId}" />
+            <div class="form-row">
+                <label>태그 선택</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <label th:each="tagOpt : ${tagOptions}" style="font-weight: normal; font-size: 14px; cursor: pointer;">
+                        <input type="checkbox" th:value="${tagOpt}" th:field="*{tagCodes}" style="width: auto;"/>
+                        <span th:text="${tagOpt}"></span>
+                    </label>
+                </div>
+            </div>
 
-				    <div>
-				        <label for="name">영양제 이름</label>
-				        <input type="text" id="name" th:field="*{name}" placeholder="예: 비타민C 1000mg"/>
+            <div class="form-row">
+                <label>사진</label>
+                <input type="file" th:field="*{imageFile}" accept="image/*"
+                       style="border: none; padding-left: 0;">
+            </div>
 
-				        <div th:if="${nameError}" style="color:red; font-size:0.9em;"
-				             th:text="${nameError}"></div>
-				    </div>
+            <div class="form-row">
+                <label>메모</label>
+                <textarea th:field="*{memo}" rows="4" placeholder="섭취 목적 등 메모"></textarea>
+            </div>
 
-				    <div>
-				        <label for="brand">브랜드</label>
-				        <input type="text" id="brand" th:field="*{brand}" placeholder="예: OOO 브랜드"/>
-
-				        <div th:if="${brandError}" style="color:red; font-size:0.9em;"
-				             th:text="${brandError}"></div>
-				    </div>
-
-				    <div>
-				        <label>태그</label>
-				        <div th:each="tagOpt : ${tagOptions}">
-				            <label>
-				                <input type="checkbox"
-				                       th:value="${tagOpt}"
-				                       th:field="*{tagCodes}" />
-				                <span th:text="${tagOpt}"></span>
-				            </label>
-				        </div>
-
-				        <div th:if="${tagsError}" style="color:red; font-size:0.9em;"
-				             th:text="${tagsError}"></div>
-				    </div>
-
-				    <div>
-				        <label for="imageFile">사진</label>
-				        <input type="file" id="imageFile" name="imageFile" accept="image/*">
-				    </div>
-
-				    <div>
-				        <label for="memo">메모</label><br/>
-				        <textarea id="memo" th:field="*{memo}" rows="4" cols="40"
-				                  placeholder="섭취 목적, 시간대, 기타 메모를 적어주세요."></textarea>
-				    </div>
-
-				    <div>
-				        <button type="submit" class="custom-btn btn-main"
-				                th:text="*{id} == null ? '등록하기' : '수정하기'">등록하기</button>
-                        <button type="reset" class="custom-btn btn-sub">다시 작성</button>
-				    </div>
-				</form>
-		
-	
-	
+            <div style="text-align: center; margin-top: 30px;">
+                <button type="submit" class="custom-btn"
+                        th:text="*{id} == null ? '등록하기' : '수정하기'">등록</button>
+                <button type="reset" class="custom-btn btn-gray">초기화</button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

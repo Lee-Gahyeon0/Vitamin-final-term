@@ -52,6 +52,7 @@ public class IntakeLogController {
         }
 
         Long memberId = loginMember.getId();
+        
 
         // 오늘 복용 기록
         List<IntakeLog> todayLogs = intakeLogService.getTodayLogs(memberId);
@@ -122,15 +123,36 @@ public class IntakeLogController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
 
-            List<IntakeLog> todayLogs = intakeLogService.getTodayLogs(loginMember.getId());
+            Long memberId = loginMember.getId();
+
+            // 오늘 복용 기록
+            List<IntakeLog> todayLogs = intakeLogService.getTodayLogs(memberId);
             model.addAttribute("todayLogs", todayLogs);
 
-            List<Supplement> mySupplements = supplementService.getSupplements(loginMember.getId());
+            // 전체 복용 기록(히스토리)
+            List<IntakeLog> allLogs = intakeLogService.getHistory(memberId);
+            model.addAttribute("allLogs", allLogs);
+
+            // 통계
+            int totalLogs = allLogs.size();
+            int takenCount = 0;
+            for (IntakeLog log : allLogs) {
+                if (log.isTaken()) takenCount++;
+            }
+            double takenRate = totalLogs > 0 ? (takenCount * 100.0) / totalLogs : 0.0;
+
+            model.addAttribute("totalLogs", totalLogs);
+            model.addAttribute("takenCount", takenCount);
+            model.addAttribute("takenRate", takenRate);
+
+            // 내 영양제 목록
+            List<Supplement> mySupplements = supplementService.getSupplements(memberId);
             model.addAttribute("supplements", mySupplements);
             model.addAttribute("hasSupplements", !mySupplements.isEmpty());
 
+            // 상호작용 경고
             List<InteractionRule> interactions =
-                    interactionService.checkTodayInteractions(loginMember.getId());
+                    interactionService.checkTodayInteractions(memberId);
             model.addAttribute("interactions", interactions);
 
             // 사용자 입력 값 유지

@@ -1,189 +1,237 @@
-/* --- 전체 페이지 공통 디자인 --- */
+/* =========================================
+   1. 기본 설정 (Base)
+   ========================================= */
 body {
-    background-color: #f7f9fc; /* 배경색: 아주 연한 회하늘색 */
-    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-    margin: 0;
-    padding: 0;
-    color: #333;
+    background-color: #f7f9fc;
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    margin: 0; padding: 0; color: #333;
+    line-height: 1.6;
 }
 
-/* 링크 기본 설정 */
-a { text-decoration: none; color: inherit; }
+a { text-decoration: none; color: inherit; transition: opacity 0.2s; }
 ul { list-style: none; padding: 0; margin: 0; }
+* { box-sizing: border-box; } /* 레이아웃 깨짐 방지 필수 */
 
-/* 제목 중앙 정렬 */
+/* 제목 스타일 */
 h1 {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 30px;
-    color: #333;
-    font-weight: 800;
+    text-align: center; margin-top: 50px; margin-bottom: 30px;
+    color: #2c3e50; font-weight: 800; letter-spacing: -0.5px;
 }
 
-/* --- 상단바 스타일 --- */
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* 옅은 그림자 */
-    margin-bottom: 30px;
+/* 중앙 정렬용 컨테이너 (필요시 사용) */
+.center-box {
+    max-width: 800px; margin: 0 auto; padding: 20px; text-align: center;
 }
-.top-left a, .top-right a, .top-right span {
-    font-weight: bold;
-    color: #555;
-    margin-left: 15px;
-    font-size: 15px;
+
+/* =========================================
+   2. 상단바 (Top Bar)
+   ========================================= */
+.top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px;
+}
+.top-left a { font-weight: 800; font-size: 20px; color: #FF512F; }
+.top-right a, .top-right span {
+    font-weight: 600; color: #555; margin-left: 15px; font-size: 15px;
 }
 .top-left a:hover, .top-right a:hover { color: #FF512F; }
 
-/* --- 버튼 스타일 통일 (그라데이션 하나만 사용) --- */
+/* =========================================
+   3. 버튼 스타일 (Buttons)
+   ========================================= */
 .custom-btn {
     display: inline-block;
-    padding: 12px 0; /* 좌우는 width로 제어하거나 따로 설정 */
-    width: 100%;     /* 기본 꽉 차게 */
-    font-size: 16px;
-    font-weight: 700;
-    text-align: center;
-    border-radius: 8px; /* 살짝 둥근 네모 */
-    border: none;
-    cursor: pointer;
-    background: linear-gradient(45deg, #FF512F, #F09819);
+    padding: 12px 30px;
+    min-width: 80px; width: auto;
+    font-size: 15px; font-weight: 700; text-align: center;
+    border-radius: 50px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #FF512F, #F09819);
     color: white;
     box-shadow: 0 4px 15px rgba(255, 81, 47, 0.3);
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin: 5px;
 }
 .custom-btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 81, 47, 0.4);
 }
 
-/* 작은 버튼 (수정/삭제용) */
-.btn-sm {
-    width: auto;
-    padding: 6px 15px;
-    font-size: 13px;
-    border-radius: 20px;
-    margin: 2px;
-}
+/* 작은 버튼 & 회색 버튼 */
+.btn-sm { padding: 5px 15px; font-size: 13px; border-radius: 15px; min-width: auto; }
+.btn-gray { background: #eff2f5; color: #666; box-shadow: none; }
+.btn-gray:hover { background: #e2e6ea; color: #333; }
 
-/* --- 로그인/회원가입 카드 스타일 (화면 중앙 배치) --- */
-.center-container {
-    display: flex;
-    justify-content: center; /* 가로 중앙 */
-    align-items: center;     /* 세로 중앙 */
-    min-height: 80vh;        /* 화면 높이의 80% 확보 */
-    padding: 20px;
+/* =========================================
+   4. 홈 화면 카드 (Home Cards)
+   ========================================= */
+.home-container {
+    display: flex; justify-content: center; align-items: stretch;
+    gap: 40px; padding: 40px 20px;
+    flex-wrap: wrap; max-width: 1000px; margin: 0 auto;
 }
-
-.auth-card {
-    background: white;
-    padding: 40px 30px;
-    width: 100%;
-    max-width: 400px; /* 카드 최대 너비 */
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* 부드러운 그림자 */
+.home-card {
+    background: white; width: 320px; padding: 50px 30px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; flex-direction: column; align-items: center;
+    border: 1px solid #f0f0f0;
+}
+.home-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(255, 81, 47, 0.15);
+    border-color: #ffe0d0;
+}
+.home-icon {
+    font-size: 60px; margin-bottom: 25px;
+    background: #fff5f0; width: 100px; height: 100px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.home-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #333; }
+.home-card p {
+    color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 30px;
+    word-break: keep-all; flex-grow: 1;
 }
 
-.auth-card input {
+/* =========================================
+   5. [중요] 폼 스타일 (로그인/회원가입/등록 완벽 수정)
+   ========================================= */
+.card-box {
+    background: white; 
+    width: 100%; max-width: 500px; /* 로그인창이 너무 넓지 않게 제한 */
+    margin: 30px auto 60px auto; 
+    padding: 50px 40px; 
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+    text-align: left; 
+    border: 1px solid #f0f0f0;
+}
+
+/* 라벨: 입력창 바로 위에 위치 (블록 요소) */
+.card-box label {
+    display: block; 
+    font-weight: 700; 
+    margin-bottom: 8px; margin-top: 20px;
+    color: #444; font-size: 14px;
+}
+.card-box label:first-child { margin-top: 0; }
+
+/* 입력창: 가로 100% 꽉 차게 */
+.card-box input[type="text"],
+.card-box input[type="password"],
+.card-box input[type="email"],
+.card-box input[type="date"],
+.card-box select,
+.card-box textarea {
+    width: 100%; 
+    padding: 14px;
+    border: 1px solid #e1e4e8; border-radius: 12px;
+    background-color: #fcfcfc; 
+    font-size: 15px; color: #333;
+    transition: all 0.2s; appearance: none;
+}
+
+/* 입력창 포커스 효과 */
+.card-box input:focus, .card-box select:focus, .card-box textarea:focus {
+    border-color: #FF512F; background-color: #fff; outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 81, 47, 0.1);
+}
+
+.card-box textarea { min-height: 120px; resize: vertical; }
+
+/* 체크박스 & 라디오버튼 (얘네는 100% 되면 안됨) */
+.card-box input[type="checkbox"], .card-box input[type="radio"] {
+    width: auto; margin-right: 6px; transform: scale(1.2); cursor: pointer;
+}
+.check-label {
+    display: inline-block !important; margin-top: 0 !important;
+    margin-right: 15px; font-weight: normal !important; cursor: pointer;
+}
+
+/* 폼 내부 버튼 (로그인 버튼 등) */
+.form-actions { margin-top: 30px; text-align: center; }
+
+/* 폼 안에 있는 버튼은 가로로 꽉 차게 (모바일 친화적 & 레퍼런스 스타일) */
+.card-box .custom-btn {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box; /* 패딩 포함 너비 계산 */
-    font-size: 15px;
-}
-.auth-card input:focus {
-    border-color: #FF512F;
-    outline: none;
-}
-.auth-card label {
     display: block;
-    text-align: left;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #555;
-    font-size: 14px;
+    border-radius: 12px; /* 입력창과 동일한 둥글기 */
+    padding: 15px 0;
+    font-size: 16px;
+}
+/* 단, 폼 안에서도 작은 버튼(.btn-sm)은 작게 유지 */
+.card-box .btn-sm {
+    width: auto; display: inline-block; padding: 5px 15px;
 }
 
-/* --- 영양제 목록 카드 그리드 스타일 --- */
+/* =========================================
+   6. 테이블 스타일 (히스토리/현황)
+   ========================================= */
+.table-container {
+    overflow-x: auto; margin: 20px auto; max-width: 1000px;
+    border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+table {
+    width: 100%; border-collapse: collapse; background-color: white;
+    text-align: left; min-width: 600px;
+}
+thead th {
+    background-color: #FF512F; color: white; padding: 15px;
+    font-weight: 600; font-size: 15px; white-space: nowrap;
+}
+tbody td {
+    padding: 15px; border-bottom: 1px solid #eee; color: #555; font-size: 14px;
+}
+tbody tr:nth-child(even) { background-color: #fdfdfd; }
+tbody tr:hover { background-color: #fff8f5; }
+
+/* =========================================
+   7. 영양제 리스트 카드 (Grid List)
+   ========================================= */
 .card-grid {
-    display: grid;
-    /* 화면 크기에 따라 자동 조절 (최소 280px) */
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 25px;
-    padding: 0 20px 50px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+    gap: 25px; padding: 0 20px 50px 20px; max-width: 1200px; margin: 0 auto;
 }
-
 .supplement-card {
-    background: white;
-    border-radius: 15px;
-    padding: 25px;
+    background: white; border-radius: 20px; padding: 25px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: transform 0.2s;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; position: relative; transition: transform 0.2s;
+    border: 1px solid #eee;
 }
 .supplement-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
-
+.card-badge {
+    position: absolute; top: 15px; left: 15px;
+    background-color: #FF512F; color: white;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 14px; font-weight: bold;
+    display: flex; justify-content: center; align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
 .card-img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    background-color: #eee;
+    width: 90px; height: 90px; object-fit: cover; border-radius: 50%;
+    margin: 15px 0; background-color: #f0f0f0;
 }
+.card-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; margin-top: 10px; }
+.card-brand { font-size: 13px; color: #888; margin-bottom: 10px; }
 
-.card-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 5px;
+.tag-pill {
+    display: inline-block; background: #fff4e6; color: #FF512F;
+    padding: 4px 10px; border-radius: 12px;
+    font-size: 12px; font-weight: bold; margin: 2px;
 }
-.card-brand {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 15px;
+.status-link {
+    display: inline-block; font-size: 12px; font-weight: bold;
+    padding: 5px 12px; border-radius: 20px; margin-bottom: 10px;
+    background: white; transition: all 0.2s;
 }
-.card-tags span {
-    background: #fff4e6;
-    color: #FF512F;
-    padding: 3px 8px;
-    border-radius: 10px;
-    font-size: 12px;
-    margin: 2px;
-}
-.card-actions {
-    margin-top: auto; /* 버튼을 항상 바닥으로 */
-    width: 100%;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
+.status-link.warning { border: 1px solid #FF512F; color: #FF512F; }
+.status-link.warning:hover { background: #FF512F; color: white; }
+.status-link.success { border: 1px solid #28a745; color: #28a745; }
+.status-link.success:hover { background: #28a745; color: white; }
 
-/* --- 내 정보 테이블 스타일 --- */
-.info-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-.info-table th {
-    text-align: left;
-    padding: 12px;
-    color: #666;
-    width: 80px;
-}
-.info-table td {
-    padding: 12px;
-    font-weight: bold;
-    border-bottom: 1px solid #eee;
-}
-.info-table tr:last-child td { border-bottom: none; }
+.card-actions { margin-top: auto; width: 100%; padding-top: 15px; border-top: 1px solid #eee; }
