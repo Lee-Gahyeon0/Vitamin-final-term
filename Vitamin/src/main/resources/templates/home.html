@@ -15,6 +15,10 @@
             </div>
             <div th:if="${session.loginMember} != null">
                 <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+				<a th:if="${session.loginMember.role == 'ADMIN'}"
+				       th:href="@{/admin}">
+				        관리자 페이지
+				    </a>
                 <a th:href="@{/members/me}">내 정보</a>
                 <a th:href="@{/members/logout}">로그아웃</a>
             </div>

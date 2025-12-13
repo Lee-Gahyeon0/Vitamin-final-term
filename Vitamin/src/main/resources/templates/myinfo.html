@@ -6,34 +6,41 @@
     <title>내 정보</title>
 </head>
 <body>
+
     <div class="top-bar">
         <div class="top-left"><a th:href="@{/}">홈으로</a></div>
-    </div>
-
-    <div class="center-container">
-        <div class="auth-card" style="max-width: 500px;">
-            <h1>내 정보</h1>
-            
-            <table class="info-table">
-                <tr>
-                    <th>이메일</th>
-                    <td th:text="${member.email}">user@example.com</td>
-                </tr>
-                <tr>
-                    <th>닉네임</th>
-                    <td th:text="${member.nickname}">홍길동</td>
-                </tr>
-                <tr>
-                    <th>권한</th>
-                    <td th:text="${member.role}">USER</td>
-                </tr>
-            </table>
-
-            <div style="margin-top: 30px;">
-                <a th:href="@{/}" class="custom-btn" style="width: 120px; display:inline-block; margin-right:10px;">홈으로</a>
-                <a th:href="@{/members/logout}" class="custom-btn" style="width: 120px; display:inline-block; background: #999; box-shadow:none;">로그아웃</a>
-            </div>
+        <div class="top-right">
+            <a th:href="@{/members/logout}">로그아웃</a>
         </div>
     </div>
+
+    <div class="card-box">
+        <h1>내 정보</h1>
+
+        <div style="margin-top: 30px; margin-bottom: 30px;">
+            
+            <div style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                <span style="font-weight: bold; color: #555;">이메일</span>
+                <span th:text="${member.email}" style="color: #333;">user@example.com</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                <span style="font-weight: bold; color: #555;">닉네임</span>
+                <span th:text="${member.nickname}" style="color: #333;">홍길동</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee;">
+                <span style="font-weight: bold; color: #555;">권한</span>
+                <span th:text="${member.role}" style="color: #FF512F; font-weight: bold;">USER</span>
+            </div>
+
+        </div>
+
+        <div class="form-actions" style="display: flex; gap: 10px; justify-content: center;">
+            <a th:href="@{/}" class="custom-btn" style="width: 100%;">홈으로</a>
+            <a th:href="@{/members/logout}" class="custom-btn btn-gray" style="width: 100%; background: #eee; color: #555;">로그아웃</a>
+        </div>
+    </div>
+
 </body>
 </html>

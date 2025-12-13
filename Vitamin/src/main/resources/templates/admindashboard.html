@@ -2,40 +2,73 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <title>관리자 대시보드</title>
 </head>
 <body>
-	
-	<!-- [공통 헤더] 로그인 상태에 따라 다르게 -->
-		<div class="top-bar">
-		    <!-- 왼쪽 : 홈 -->
-		    <div class="top-left">
-		        <a th:href="@{/}">홈</a>
-		    </div>
+    
+    <div class="top-bar">
+        <div class="top-left">
+            <a th:href="@{/}">홈</a>
+        </div>
+        <div class="top-right">
+            <div th:if="${session.loginMember} == null">
+                <a th:href="@{/members/login}">로그인</a>
+                <a th:href="@{/members/register}">회원가입</a>
+            </div>
+            <div th:if="${session.loginMember} != null">
+                <span th:text="${session.loginMember.nickname} + ' 님'"></span>
+                <a th:href="@{/members/me}">내 정보</a>
+                <a th:href="@{/members/logout}">로그아웃</a>
+            </div>
+        </div>
+    </div>
 
-		    <!-- 오른쪽 : 로그인/회원가입 or 사용자 정보 -->
-		    <div class="top-right">
-		        <!-- 비로그인 -->
-		        <div th:if="${session.loginMember} == null">
-		            <a th:href="@{/members/login}">로그인</a>
-		            <a th:href="@{/members/register}">회원가입</a>
-		        </div>
+    <div class="card-box">
+        
+        <div style="font-size: 50px; margin-bottom: 10px;">⚙️</div>
 
-		        <!-- 로그인 상태 -->
-		        <div th:if="${session.loginMember} != null">
-		            <span th:text="${session.loginMember.nickname} + ' 님'"></span>
-		            <a th:href="@{/members/me}">내 정보</a>
-		            <a th:href="@{/members/logout}">로그아웃</a>
-		        </div>
-		    </div>
-		</div>
-		
-		<h1>관리자 대시보드</h1>
+        <h1>관리자 대시보드</h1>
 
-		<p>여기는 ADMIN만 들어올 수 있는 페이지입니다.</p>
+        <p style="color: #666; margin-bottom: 30px;">
+            관리자(ADMIN) 전용 페이지입니다.<br>
+            데이터 관리 및 시스템 설정을 진행할 수 있습니다.
+        </p>
+        
+        <div th:if="${param.done != null}" 
+             style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold;">
+            ✅ 작업 완료: <span th:text="${param.done}"></span>
+        </div>
 
-		<p><a th:href="@{/}">홈으로</a></p>
+        <div style="text-align: left; margin-top: 20px;">
+            <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; color: #444;">
+                데이터 관리
+            </h3>
+
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                
+                <form th:action="@{/admin/load-products}" method="post">
+                    <button type="submit" class="custom-btn" style="width: 100%;">
+                        API 제품 데이터 가져오기
+                    </button>
+                </form>
+
+                <form th:action="@{/admin/normalize}" method="post">
+                    <button type="submit" class="custom-btn btn-gray" style="width: 100%;">
+                        정규화 업데이트
+                    </button>
+                </form>
+                
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px solid #f0f0f0; padding-top: 20px;">
+            <a th:href="@{/}" style="color: #888; font-weight: bold; font-size: 14px;">
+                ← 홈으로 돌아가기
+            </a>
+        </div>
+
+    </div>
 
 </body>
 </html>

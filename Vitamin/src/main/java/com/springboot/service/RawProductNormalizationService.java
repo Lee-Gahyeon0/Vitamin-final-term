@@ -27,9 +27,11 @@ public class RawProductNormalizationService {
     @Transactional
     public void normalizeAll() {
 
-        // 0) 이전 정제 데이터 싹 비우고 시작
-        normalizedSupplementRepository.deleteAll();
-
+    	if (normalizedSupplementRepository.count() > 0) {
+            System.out.println("[NORMALIZE] 이미 정규화가 되어 있습니다.");
+            return;
+        }
+    	
         // 1) 원본 전체 조회
         List<RawProduct> all = rawProductRepository.findAll();
 

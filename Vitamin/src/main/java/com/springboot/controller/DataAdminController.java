@@ -2,11 +2,13 @@ package com.springboot.controller;
 
 import com.springboot.service.FoodSafetyApiService;
 import com.springboot.service.RawProductNormalizationService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
 @RequestMapping("/admin")
 public class DataAdminController {
 
@@ -18,16 +20,25 @@ public class DataAdminController {
         this.foodSafetyApiService = foodSafetyApiService;
         this.normalizationService = normalizationService;
     }
-
-    @GetMapping("/load-products")
-    public String loadProducts() {
-        foodSafetyApiService.loadProductDataFromApi();
-        return "raw_product 로딩 완료";
+    
+    @GetMapping
+    public String adminDashboard() {
+        return "admindashboard";
     }
 
-    @GetMapping("/normalize")
+    @PostMapping("/load-products")
+    public String loadProducts() {
+        System.out.println("[ADMIN] load-products START");
+        foodSafetyApiService.loadProductDataFromApi(); 
+        System.out.println("[ADMIN] load-products DONE");
+        return "redirect:/admin?done=load-products";
+    }
+
+    @PostMapping("/normalize")
     public String normalize() {
-        normalizationService.normalizeAll();
-        return "normalized_supplement 업데이트 완료";
+        System.out.println("[ADMIN] normalize START");
+        normalizationService.normalizeAll(); 
+        System.out.println("[ADMIN] normalize DONE");
+        return "redirect:/admin?done=normalize";
     }
 }
