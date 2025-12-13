@@ -172,24 +172,9 @@ public class IntakeLogController {
         }
     }
 
-    /**
-     * 3) 복용 기록 히스토리 화면 (원래 있던 거 그대로)
-     */
-    @GetMapping("/history")
-    public String history(HttpSession session, Model model) {
-        Member loginMember = (Member) session.getAttribute("loginMember");
-        if (loginMember == null) {
-            return "redirect:/members/login";
-        }
-
-        List<IntakeLog> logs = intakeLogService.getHistory(loginMember.getId());
-        model.addAttribute("logs", logs);
-
-        return "history";
-    }
 
     /**
-     * 4) 복용 기록 CSV로 내보내기
+     * 복용 기록 CSV로 내보내기
      */
     @GetMapping("/export")
     public void exportLogsAsCsv(HttpServletResponse response,
@@ -251,7 +236,6 @@ public class IntakeLogController {
         intakeLogService.deleteLog(loginMember.getId(), id); // 본인 것만 삭제
         return "redirect:/intakes/today";
     }
-     
-
+    
 
 }

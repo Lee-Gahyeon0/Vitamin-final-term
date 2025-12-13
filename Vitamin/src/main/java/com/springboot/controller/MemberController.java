@@ -119,14 +119,14 @@ public class MemberController {
 
         if (loginMember == null) {
             // 로그인 안 되어 있으면 로그인 페이지로
-            return "redirect:/login";
+            return "redirect:/members/login";
         }
 
         // DB에서 다시 조회해서 넘기기
         Member member = memberService.findById(loginMember.getId());
 
         model.addAttribute("member", member);
-        return "/myInfo";   // templates/members/myInfo.html
+        return "/myinfo";   // templates/members/myInfo.html
     }
 
 }
