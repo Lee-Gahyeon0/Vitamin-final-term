@@ -44,15 +44,15 @@ public class InteractionService {
             }
         }
 
-        // 3. 모든 태그 수집 (소문자로 정규화)
+        // 3. 모든 태그 수집 
         Set<String> tags = new HashSet<>();
         for (Supplement s : takenSupplements) {
-            String tagStr = s.getTags(); // 필드명이 다르면 수정
+            String tagStr = s.getTags(); 
             if (tagStr == null || tagStr.isBlank()) continue;
 
             String[] split = tagStr.split(",");
             for (String t : split) {
-                String trimmed = t.trim().toLowerCase();
+                String trimmed = t.trim();
                 if (!trimmed.isEmpty()) {
                     tags.add(trimmed);
                 }
@@ -73,8 +73,6 @@ public class InteractionService {
                 String a = tagList.get(i);
                 String b = tagList.get(j);
 
-                // 여기서 repo 메서드 이름/리턴타입은 네 구현에 맞게 살짝 수정해도 됨
-                // 예: Optional<InteractionRule> 이면 isPresent 체크, List면 isEmpty 체크
                 List<InteractionRule> rulesAB =
                         interactionRuleRepository.findByTagAAndTagB(a, b);
                 List<InteractionRule> rulesBA =
@@ -99,4 +97,27 @@ public class InteractionService {
 
         return new ArrayList<>(unique.values());
     }
+    
+    @Transactional(readOnly = true)
+    public List<String> makeAdviceMessages(Long memberId,
+                                           List<IntakeLog> todayLogs,
+                                           List<IntakeLog> allLogs,
+                                           List<InteractionRule> interactions) {
+
+        List<String> messages = new ArrayList<>();
+
+        // 1) 위험 조합이 있으면 (여기선 advice 안 만들고 끝)
+        if (interactions != null && !interactions.isEmpty()) {
+            return messages;
+        }
+
+        // 2) 위험 조합이 없다면: 기본 칭찬/안내
+        messages.add("오늘은 위험 조합 없이 잘 챙겨드시고 있습니다.");
+        messages.add("추가로 영양제 더 먹을 계획이시라면, 조합은 한 번 더 확인해 주세요.");
+
+        return messages;
+    }
+
+
 }
+

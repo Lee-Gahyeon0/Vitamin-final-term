@@ -106,6 +106,7 @@
             <th>시간대</th>
             <th>상태</th>
             <th>메모</th>
+			<th>삭제</th>
         </tr>
         </thead>
         <tbody>
@@ -117,25 +118,56 @@
                 <span th:unless="${log.taken}" style="color: red;">미복용</span>
             </td>
             <td th:text="${log.memo}">메모</td>
+			
+			<td style="text-align:center;">
+				<form th:action="@{/intakes/{id}/delete(id=${log.id})}" method="post"
+					onsubmit="return confirm('이 기록을 삭제할까요?');" style="margin:0;">
+				<button type="submit" class="custom-btn btn-gray btn-sm">삭제</button>
+				</form>				           		                  
+			</td>
         </tr>
         <tr th:if="${#lists.isEmpty(todayLogs)}">
-            <td colspan="4">오늘 기록이 없습니다.</td>
+            <td colspan="5">오늘 기록이 없습니다.</td>
         </tr>
         </tbody>
     </table>
 
-    <!-- 상호작용 경고 -->
-    <div th:if="${!#lists.isEmpty(interactions)}"
-         style="background: #fff0f0; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: left;">
-        <h3 style="color: #d9534f; margin: 0 0 10px 0;">⚠️ 상호작용 경고</h3>
-        <ul style="list-style: disc; padding-left: 20px;">
-            <li th:each="rule : ${interactions}">
-                <strong th:text="${rule.severity}"></strong> :
-                <span th:text="${rule.message}"></span>
-            </li>
-        </ul>
-    </div>
+	<!-- 상호작용 경고 -->
+	<div th:if="${!#lists.isEmpty(interactions)}" class="itx-box itx-warn">
+	  <h3 class="itx-title">⚠️ 상호작용 경고</h3>
 
+	  <ul class="itx-list">
+		<li th:each="rule : ${interactions}"
+		    th:with="sev=${#strings.toUpperCase(#strings.trim(rule.severity))}"
+		    class="itx-item"
+		    th:classappend="${sev == 'HIGH'} ? ' itx-high' :
+		                    (${sev == 'MID'} ? ' itx-mid' : ' itx-low')">
+	      <span class="itx-badge" th:text="${sev}">MID</span>
+	      <span class="itx-msg" th:text="${rule.message}">메시지</span>
+	    </li>
+	  </ul>
+
+	  <div class="itx-legend">
+	    <span class="itx-legend-item"><i class="itx-dot itx-high"></i> HIGH : 중복/과다 섭취 주의</span>
+	    <span class="itx-legend-item"><i class="itx-dot itx-mid"></i> MID : 흡수 방해 → 시간 간격 권장</span>
+	    <span class="itx-legend-item"><i class="itx-dot itx-low"></i> LOW : 개인차 가능 → 관찰 권장</span>
+	  </div>
+	</div>
+
+	<!-- ✅ 상호작용 경고가 없을 때 -->
+	<div th:if="${#lists.isEmpty(interactions)}" class="itx-box itx-ok">
+	  <h3 class="itx-title">✅ 오늘은 조합 위험 경고가 없습니다.</h3>
+
+	  <ul th:if="${adviceMessages != null and !#lists.isEmpty(adviceMessages)}" class="itx-advice">
+	    <li th:each="msg : ${adviceMessages}" th:text="${msg}">메시지</li>
+	  </ul>
+
+	  <p th:if="${adviceMessages == null or #lists.isEmpty(adviceMessages)}" class="itx-empty">
+	    잘 챙기고 있어요 👍
+	  </p>
+	</div>
+	
+	
     <hr style="margin: 40px 0; border: 0; border-top: 1px solid #ddd;">
 
     <h2>전체 기록 (히스토리)</h2>
@@ -148,6 +180,7 @@
             <th>시간대</th>
             <th>상태</th>
             <th>메모</th>
+			<th>삭제</th>
         </tr>
         </thead>
         <tbody>
@@ -158,9 +191,15 @@
             <td th:text="${log.timeSlot}">MORNING</td>
             <td th:text="${log.taken} ? '복용' : '미복용'">복용</td>
             <td th:text="${log.memo}">메모</td>
+			<td style="text-align:center;">
+			        <form th:action="@{/intakes/{id}/delete(id=${log.id})}" method="post"
+			              onsubmit="return confirm('이 기록을 삭제할까요?');" style="margin:0;">
+			            <button type="submit" class="custom-btn btn-gray btn-sm">삭제</button>
+			        </form>
+			</td>
         </tr>
         <tr th:if="${#lists.isEmpty(allLogs)}">
-            <td colspan="6">기록이 없습니다.</td>
+            <td colspan="7">기록이 없습니다.</td>
         </tr>
         </tbody>
     </table>

@@ -93,6 +93,11 @@ public class IntakeLogController {
         List<InteractionRule> interactions =
                 interactionService.checkTodayInteractions(memberId);
         model.addAttribute("interactions", interactions);
+        
+        // 잘먹으면 다른말
+        List<String> adviceMessages =
+                interactionService.makeAdviceMessages(memberId, todayLogs, allLogs, interactions);
+        model.addAttribute("adviceMessages", adviceMessages);
 
         return "today";
     }
@@ -154,6 +159,11 @@ public class IntakeLogController {
             List<InteractionRule> interactions =
                     interactionService.checkTodayInteractions(memberId);
             model.addAttribute("interactions", interactions);
+            
+            // 잘먹으면 굿
+            List<String> adviceMessages =
+                    interactionService.makeAdviceMessages(memberId, todayLogs, allLogs, interactions);
+            model.addAttribute("adviceMessages", adviceMessages);
 
             // 사용자 입력 값 유지
             model.addAttribute("intakeForm", intakeForm);
@@ -225,6 +235,23 @@ public class IntakeLogController {
 
         writer.flush();
     }
+    
+    /**
+     * 삭제
+     */
+    @PostMapping("/{id}/delete")
+    public String deleteLog(@PathVariable("id") Long id,
+                            HttpSession session) {
+
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/members/login";
+        }
+
+        intakeLogService.deleteLog(loginMember.getId(), id); // 본인 것만 삭제
+        return "redirect:/intakes/today";
+    }
+     
 
 
 }

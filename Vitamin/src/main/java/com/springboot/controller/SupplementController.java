@@ -29,8 +29,8 @@ public class SupplementController {
 
     // 화면에서 선택할 태그 목록 (한글 버전)
     private static final List<String> TAG_OPTIONS = List.of(
-            "철분", "칼슘", "비타민C", "비타민B",
-            "오메가3", "유산균", "홍삼", "루테인", "멀티비타민"
+            "철분", "칼슘", "비타민A", "비타민B", "비타민C", "비타민D", "멀티비타민",
+            "오메가3", "유산균", "홍삼", "루테인", "식이섬유", "기타" 
     );
 
     public SupplementController(SupplementService supplementService) {

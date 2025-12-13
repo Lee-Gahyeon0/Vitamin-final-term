@@ -15,5 +15,8 @@ public interface IntakeLogRepository extends JpaRepository<IntakeLog, Long> {
  
     // 회원의 특적 날짜 복용 기록
     List<IntakeLog> findByMemberIdAndDate(Long memberId, LocalDate date);
+    
+    //삭제
+    long deleteByIdAndMemberId(Long id, Long memberId);
 	
 }

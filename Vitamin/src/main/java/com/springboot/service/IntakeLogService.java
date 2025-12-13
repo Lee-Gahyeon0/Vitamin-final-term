@@ -81,4 +81,20 @@ public class IntakeLogService {
     public List<IntakeLog> getAllLogsForMember(Long memberId) {
     	return getHistory(memberId);
     }
+    
+    /**
+     * 복욕 기록 삭제 
+     */
+    @Transactional
+    public void deleteLog(Long memberId, Long intakeLogId) {
+        IntakeLog log = intakeLogRepository.findById(intakeLogId)
+                .orElseThrow(() -> new IllegalArgumentException("기록이 존재하지 않습니다. id=" + intakeLogId));
+
+        if (log.getMember() == null || !log.getMember().getId().equals(memberId)) {
+            throw new IllegalArgumentException("본인 기록만 삭제할 수 있습니다."); // 본인꺼만 삭제(혹시몰라서)
+        }
+
+        intakeLogRepository.delete(log); // 삭제
+    }
+
 }
